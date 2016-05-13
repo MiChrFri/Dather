@@ -1,9 +1,12 @@
 package com.example.michael.dather;
 
 import android.Manifest;
+import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
-import android.net.Uri;
+import android.graphics.Color;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.ActivityCompat;
@@ -13,11 +16,16 @@ import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.View;
 import android.widget.CheckBox;
+import android.widget.TextView;
 
-import com.google.android.gms.appindexing.Action;
-import com.google.android.gms.appindexing.AppIndex;
-import com.google.android.gms.common.api.GoogleApiClient;
+import com.example.michael.dather.API.APIService;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.io.IOException;
+import java.util.ArrayList;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -25,34 +33,76 @@ public class MainActivity extends AppCompatActivity {
     final int PERMISSION_RECORD_AUDIO = 0;
     CheckBox locationPermission;
     final int PERMISSION_ACCESS_FINE_LOCATION = 1;
+    final int PERMISSION_INTERNET = 2;
+    boolean sensoring = false;
+
+    Sensors sensor;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        SharedPreferences mPrefs = getSharedPreferences("prefs", 0);
+        if(!mPrefs.getBoolean("acceptedTerms", false)) {
+            Intent myIntent = new Intent(this, TermsOfUseActivity.class);
+            startActivity(myIntent);
+        }
+
+        if(!mPrefs.getBoolean("permitted", false)) {
+            Intent myIntent2 = new Intent(this, PermissionsActivity.class);
+            startActivity(myIntent2);
+        }
+
+
+        //permissionInternet();
+
+        //sendToServer();
+
         setContentView(R.layout.activity_main);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        recordingPermission = (CheckBox) findViewById(R.id.checkBox1);
-        permissionRecordAudio();
+        final FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
 
-        locationPermission = (CheckBox) findViewById(R.id.checkBox2);
-        permissionLocation();
-
-
-        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
 
-                try {
-                    Sensors sensors = new Sensors(getApplicationContext(), 1000);
-                } catch (IOException e) {
-                    e.printStackTrace();
+                if (!sensoring) {
+                    Snackbar snackbar;
+                    snackbar = Snackbar.make(view, "Sensoring . . .", Snackbar.LENGTH_INDEFINITE);
+                    View snackBarView = snackbar.getView();
+                    snackBarView.setBackgroundColor(Color.parseColor("#cc0000"));
+                    snackbar.show();
+
+                    sensoring = true;
+
+                    Handler handler=new Handler();
+                    Runnable r=new Runnable() {
+                        public void run() {
+                            try {
+                                sensor = new Sensors(getApplicationContext(), 1000);
+                            } catch (IOException e) {
+                                e.printStackTrace();
+                            }
+                        }
+                    };
+                    handler.postDelayed(r, 500);
+
+
+                } else {
+                    try {
+                        sendToServer(sensor.params);
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+
+                    Snackbar.make(view, "STOPPED SENSORING", Snackbar.LENGTH_LONG)
+                            .setAction("Action", null).show();
+                    sensoring = false;
                 }
 
-                Snackbar.make(view, "START SENSORING", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
             }
         });
     }
@@ -81,41 +131,71 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    private void permissionRecordAudio() {
-        Log.i("PERMISSION", "ASK");
-        if (ContextCompat.checkSelfPermission(this, Manifest.permission.RECORD_AUDIO) == PackageManager.PERMISSION_GRANTED) {
-            recordingPermission.setChecked(true);
-            Log.i("PERMISSION", "HAVE IT");
-        } else {
-            Log.i("PERMISSION", "ELSE");
-            recordingPermission.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    if (recordingPermission.isChecked()) {
-                        ActivityCompat.requestPermissions(MainActivity.this, new String[]{Manifest.permission.RECORD_AUDIO}, PERMISSION_RECORD_AUDIO);
-                    }
-                }
-            });
+    private void sendToServer(ArrayList<ArrayList<String>> dataSet) throws JSONException {
+        JSONArray jsAr = new JSONArray();
+
+        for(ArrayList<String> list : dataSet) {
+            JSONObject obj = new JSONObject();
+            obj.put("timestamp", list.get(0));
+            obj.put("light", list.get(1));
+            obj.put("steps", list.get(2));
+            obj.put("volume", list.get(3));
+            obj.put("accX", list.get(4));
+            obj.put("accY", list.get(5));
+            obj.put("accZ", list.get(6));
+            obj.put("latitude", list.get(7));
+            obj.put("longitude", list.get(8));
+
+            jsAr.put(obj);
         }
+
+        APIService apiService = new APIService();
+        apiService.sendData(jsAr.toString());
     }
 
-    private void permissionLocation() {
-        Log.i("PERMISSION", "ASK");
-        if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
-            locationPermission.setChecked(true);
-            Log.i("PERMISSION", "HAVE IT");
-        } else {
-            Log.i("PERMISSION", "ELSE");
-            locationPermission.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    if (locationPermission.isChecked()) {
-                        ActivityCompat.requestPermissions(MainActivity.this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, PERMISSION_ACCESS_FINE_LOCATION);
-                    }
-                }
-            });
-        }
-    }
+//    private void permissionRecordAudio() {
+//        if (ContextCompat.checkSelfPermission(this, Manifest.permission.RECORD_AUDIO) == PackageManager.PERMISSION_GRANTED) {
+//            recordingPermission.setChecked(true);
+//        } else {
+//            recordingPermission.setOnClickListener(new View.OnClickListener() {
+//                @Override
+//                public void onClick(View v) {
+//                    if (recordingPermission.isChecked()) {
+//                        ActivityCompat.requestPermissions(MainActivity.this, new String[]{Manifest.permission.RECORD_AUDIO}, PERMISSION_RECORD_AUDIO);
+//                    }
+//                }
+//            });
+//        }
+//    }
+//
+//    private void permissionLocation() {
+//        if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
+//            locationPermission.setChecked(true);
+//        } else {
+//            locationPermission.setOnClickListener(new View.OnClickListener() {
+//                @Override
+//                public void onClick(View v) {
+//                    if (locationPermission.isChecked()) {
+//                        ActivityCompat.requestPermissions(MainActivity.this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, PERMISSION_ACCESS_FINE_LOCATION);
+//                    }
+//                }
+//            });
+//        }
+//    }
+//
+//    private void permissionInternet() {
+//        if (ContextCompat.checkSelfPermission(this, Manifest.permission.INTERNET) == PackageManager.PERMISSION_GRANTED) {
+//        } else {
+//            locationPermission.setOnClickListener(new View.OnClickListener() {
+//                @Override
+//                public void onClick(View v) {
+//                    if (locationPermission.isChecked()) {
+//                        ActivityCompat.requestPermissions(MainActivity.this, new String[]{Manifest.permission.INTERNET}, PERMISSION_INTERNET);
+//                    }
+//                }
+//            });
+//        }
+//    }
 
 
 /* NOT USED AT THIS TIME

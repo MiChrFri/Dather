@@ -32,7 +32,7 @@ public class LocationRequester implements LocationListener {
         locationManager = (LocationManager) context.getSystemService(servingContext.LOCATION_SERVICE);
     }
 
-    public void getLocation() {
+    public double[] getLocation() {
         try {
             Boolean isGPSEnabled = locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER);
             Boolean isNetworkEnabled = locationManager.isProviderEnabled(LocationManager.NETWORK_PROVIDER);
@@ -77,7 +77,8 @@ public class LocationRequester implements LocationListener {
             e.printStackTrace();
         }
 
-        Log.i("Location ", "Latitude: " + latitude + ", Longitude: " + longitude);
+        double location[] = {latitude, longitude};
+        return location;
     }
 
     @Override

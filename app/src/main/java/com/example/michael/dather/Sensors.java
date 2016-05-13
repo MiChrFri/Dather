@@ -5,21 +5,35 @@ import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
+import android.os.Handler;
+import android.os.Looper;
 import android.util.Log;
+import android.widget.TextView;
+
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
-import java.util.Timer;
-import java.util.TimerTask;
 
 /**
  * Created by michael on 03/05/16.
  */
 public class Sensors  {
-
     /** PROPERTIES */
     Context servingContext;
     SensorManager sensorManager;
-    final int SAMPLING_RATE;
+    int SAMPLING_RATE;
+
+    final float[] lightValue = {0};
+    final float[] stepValue = {0};
+    final float[] accelerometerValueX = {0};
+    final float[] accelerometerValueY = {0};
+    final float[] accelerometerValueZ = {0};
+    final double[] latitude = {0};
+    final double[] longitude = {0};
+    private Handler handler = new Handler();
+
+
+    ArrayList<ArrayList<String>> params = new ArrayList<ArrayList<String>>();
 
     /** CONSTRUCTOR */
     public Sensors(Context context, final int samplingRate) throws IOException {
@@ -27,16 +41,60 @@ public class Sensors  {
         sensorManager = (SensorManager) context.getSystemService(servingContext.SENSOR_SERVICE);
         SAMPLING_RATE = samplingRate;
 
-        getSensorList();
+        logSensorSteps();
+        logSensorLight();
+        logSensorAccelerometer();
+        logLocation();
 
+        handler.postDelayed(runnable, 0);
 
-
-        //LogSoundVolume();
-        LogLocation();
-        //LogSensorTemperature();
-        //LogSensorLight();
-        //LogSensorAccelerometer();
+//
+//        new Timer().scheduleAtFixedRate(new TimerTask() {
+//            @Override
+//            public void run() {
+//                Long tsLong = System.currentTimeMillis() / 1000;
+//                String ts = tsLong.toString();
+//
+//                ArrayList<String> list = new ArrayList<String>();
+//                list.add(ts);
+//                list.add(String.valueOf(lightValue[0]));
+//                list.add(String.valueOf(stepValue[0]));
+//                list.add(String.valueOf(getSoundVolume()));
+//                list.add(String.valueOf(accelerometerValueX[0]));
+//                list.add(String.valueOf(accelerometerValueY[0]));
+//                list.add(String.valueOf(accelerometerValueZ[0]));
+//                list.add(String.valueOf(longitude[0]));
+//                list.add(String.valueOf(latitude[0]));
+//
+//            params.add(list);
+//        }
+//    }, 0, SAMPLING_RATE);
     }
+
+    private Runnable runnable = new Runnable() {
+        @Override
+        public void run() {
+            Long tsLong = System.currentTimeMillis() / 1000;
+            String ts = tsLong.toString();
+
+            ArrayList<String> list = new ArrayList<String>();
+            list.add(ts);
+            list.add(String.valueOf(lightValue[0]));
+            list.add(String.valueOf(stepValue[0]));
+            list.add(String.valueOf(getSoundVolume()));
+            list.add(String.valueOf(accelerometerValueX[0]));
+            list.add(String.valueOf(accelerometerValueY[0]));
+            list.add(String.valueOf(accelerometerValueZ[0]));
+            list.add(String.valueOf(longitude[0]));
+            list.add(String.valueOf(latitude[0]));
+
+            params.add(list);
+
+            handler.postDelayed(this, SAMPLING_RATE);
+        }
+    };
+
+
 
     /** SENSORS */
     private List<Sensor> getSensorList() {
@@ -48,36 +106,23 @@ public class Sensors  {
         return sensorList;
     }
 
-    private void LogSoundVolume() {
+    private double getSoundVolume() {
         final SoundMeter soundmeter = new SoundMeter();
         soundmeter.start();
 
-        new Timer().scheduleAtFixedRate(new TimerTask() {
-            @Override
-            public void run() {
-                Log.i("MAX: ", "" + soundmeter.getAmplitude());
-            }
-        }, 0, SAMPLING_RATE);
+        soundmeter.getAmplitude();
+
+        return soundmeter.getAmplitude();
     }
 
-    private void LogLocation() {
+    private void logLocation() {
         final LocationRequester locationService = new LocationRequester(servingContext);
-
-
-        locationService.getLocation();
-
-
-
-//        new Timer().scheduleAtFixedRate(new TimerTask() {
-//            @Override
-//            public void run() {
-//                locationService.getLocation();
-//            }
-//        }, 0, SAMPLING_RATE);
+        double[] location = locationService.getLocation();
+        latitude[0] = location[0];
+        longitude[0] = location[1];
     }
 
-
-    private void LogSensorSteps() {
+    private void logSensorSteps() {
         Sensor steps = sensorManager.getDefaultSensor(Sensor.TYPE_STEP_COUNTER);
 
         if (steps != null) {
@@ -86,9 +131,8 @@ public class Sensors  {
             SensorEventListener listener = new SensorEventListener() {
                 @Override
                 public void onSensorChanged(SensorEvent event) {
-                    Log.i("STEPS : ",  "" + event.values[0]);
+                    stepValue[0] = event.values[0];
                 }
-
                 @Override
                 public void onAccuracyChanged(Sensor sensor, int accuracy) {}
             };
@@ -96,38 +140,17 @@ public class Sensors  {
         }
     }
 
-    private void LogSensorTemperature() {
-        Sensor temperature = sensorManager.getDefaultSensor(Sensor.TYPE_AMBIENT_TEMPERATURE);
 
-        if (temperature != null) {
-            final float[] pressure = {0};
-
-            SensorEventListener listener = new SensorEventListener() {
-                @Override
-                public void onSensorChanged(SensorEvent event) {
-
-                    float ambient_temperature = event.values[0];
-                    Log.i("Ambient Temperature:\n ",  String.valueOf(ambient_temperature));
-                }
-
-                @Override
-                public void onAccuracyChanged(Sensor sensor, int accuracy) {}
-            };
-            sensorManager.registerListener(listener, temperature, SensorManager.SENSOR_DELAY_UI);
-        }
-    }
-
-    private void LogSensorLight() {
+    private void logSensorLight() {
         Sensor light = sensorManager.getDefaultSensor(Sensor.TYPE_LIGHT);
 
         if(light != null) {
-            final float[] lightValue = {0};
+
 
             SensorEventListener listener = new SensorEventListener() {
                 @Override
                 public void onSensorChanged(SensorEvent event) {
                     lightValue[0] = event.values[0];
-                    Log.i("LIGHT: ", "" + lightValue[0]);
                 }
 
                 @Override
@@ -137,33 +160,22 @@ public class Sensors  {
         }
     }
 
-    public void LogSensorAccelerometer() {
+    public void logSensorAccelerometer() {
         Sensor accelerometer = sensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
 
         if(accelerometer != null) {
-            final float[] x = {0};
-            final float[] y = {0};
-            final float[] z = {0};
-
             SensorEventListener listener = new SensorEventListener() {
                 @Override
                 public void onSensorChanged(SensorEvent event) {
-                    x[0] = event.values[0];
-                    y[0] = event.values[1];
-                    z[0] = event.values[2];
+                    accelerometerValueX[0] = event.values[0];
+                    accelerometerValueY[0] = event.values[1];
+                    accelerometerValueZ[0] = event.values[2];
                 }
 
                 @Override
                 public void onAccuracyChanged(Sensor sensor, int accuracy) {
                 }
             };
-
-            new Timer().scheduleAtFixedRate(new TimerTask() {
-                @Override
-                public void run() {
-                    Log.i("ACC", "x:" + x[0] + " y:" + y[0] + " z:" + z[0]);
-                }
-            }, 0, SAMPLING_RATE);
 
             sensorManager.registerListener(listener, accelerometer, SAMPLING_RATE);
         }
