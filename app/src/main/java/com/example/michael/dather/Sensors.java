@@ -6,10 +6,7 @@ import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
 import android.os.Handler;
-import android.os.Looper;
 import android.util.Log;
-import android.widget.TextView;
-
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
@@ -17,11 +14,12 @@ import java.util.List;
 /**
  * Created by michael on 03/05/16.
  */
-public class Sensors  {
+public class Sensors implements Runnable {
     /** PROPERTIES */
     Context servingContext;
     SensorManager sensorManager;
     int SAMPLING_RATE;
+    boolean running = false;
 
     final float[] lightValue = {0};
     final float[] stepValue = {0};
@@ -41,34 +39,7 @@ public class Sensors  {
         sensorManager = (SensorManager) context.getSystemService(servingContext.SENSOR_SERVICE);
         SAMPLING_RATE = samplingRate;
 
-        logSensorSteps();
-        logSensorLight();
-        logSensorAccelerometer();
-        logLocation();
-
-        handler.postDelayed(runnable, 0);
-
-//
-//        new Timer().scheduleAtFixedRate(new TimerTask() {
-//            @Override
-//            public void run() {
-//                Long tsLong = System.currentTimeMillis() / 1000;
-//                String ts = tsLong.toString();
-//
-//                ArrayList<String> list = new ArrayList<String>();
-//                list.add(ts);
-//                list.add(String.valueOf(lightValue[0]));
-//                list.add(String.valueOf(stepValue[0]));
-//                list.add(String.valueOf(getSoundVolume()));
-//                list.add(String.valueOf(accelerometerValueX[0]));
-//                list.add(String.valueOf(accelerometerValueY[0]));
-//                list.add(String.valueOf(accelerometerValueZ[0]));
-//                list.add(String.valueOf(longitude[0]));
-//                list.add(String.valueOf(latitude[0]));
-//
-//            params.add(list);
-//        }
-//    }, 0, SAMPLING_RATE);
+        run();
     }
 
     private Runnable runnable = new Runnable() {
@@ -77,7 +48,7 @@ public class Sensors  {
             Long tsLong = System.currentTimeMillis() / 1000;
             String ts = tsLong.toString();
 
-            ArrayList<String> list = new ArrayList<String>();
+            ArrayList<String> list = new ArrayList<>();
             list.add(ts);
             list.add(String.valueOf(lightValue[0]));
             list.add(String.valueOf(stepValue[0]));
@@ -89,12 +60,13 @@ public class Sensors  {
             list.add(String.valueOf(latitude[0]));
 
             params.add(list);
+            Log.i("SENSORING ...", String.valueOf(list));
 
-            handler.postDelayed(this, SAMPLING_RATE);
+            if(running) {
+                handler.postDelayed(this, SAMPLING_RATE);
+            }
         }
     };
-
-
 
     /** SENSORS */
     private List<Sensor> getSensorList() {
@@ -140,13 +112,10 @@ public class Sensors  {
         }
     }
 
-
     private void logSensorLight() {
         Sensor light = sensorManager.getDefaultSensor(Sensor.TYPE_LIGHT);
 
         if(light != null) {
-
-
             SensorEventListener listener = new SensorEventListener() {
                 @Override
                 public void onSensorChanged(SensorEvent event) {
@@ -181,4 +150,14 @@ public class Sensors  {
         }
     }
 
+    @Override
+    public void run() {
+        logSensorSteps();
+        logSensorLight();
+        logSensorAccelerometer();
+        logLocation();
+
+        running = true;
+        handler.postDelayed(runnable, 0);
+    }
 }

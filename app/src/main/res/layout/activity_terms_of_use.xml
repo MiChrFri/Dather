@@ -5,7 +5,6 @@
     android:background="@color/colorDarkBG"
     tools:context="com.example.michael.dather.TermsOfUseActivity">
 
-
     <FrameLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -52,8 +51,6 @@
 
                 </TableLayout>
             </ScrollView>
-
-
         </LinearLayout>
     </FrameLayout>
 

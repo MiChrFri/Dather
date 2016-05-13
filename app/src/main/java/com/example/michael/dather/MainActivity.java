@@ -77,6 +77,7 @@ public class MainActivity extends AppCompatActivity {
 
                     Snackbar.make(view, "STOPPED SENSORING", Snackbar.LENGTH_LONG)
                             .setAction("Action", null).show();
+                    sensor.running = false;
                     sensoring = false;
                 }
 
@@ -105,7 +106,7 @@ public class MainActivity extends AppCompatActivity {
         APIService apiService = new APIService();
         apiService.sendData(jsAr.toString());
     }
-    
+
 /* NOT USED AT THIS TIME
     private String readFromFile() {
 
