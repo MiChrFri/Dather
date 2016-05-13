@@ -2,7 +2,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#d5d7d7"
+    android:background="@color/colorDarkBG"
     tools:context="com.example.michael.dather.TermsOfUseActivity">
 
 
@@ -37,7 +37,7 @@
                         android:gravity="center"
                         android:keepScreenOn="true"
                         android:padding="10pt"
-                        android:textColor="#252626"
+                        android:textColor="@color/colorLight"
                         android:textSize="12sp"
                         android:textStyle="bold" />
 

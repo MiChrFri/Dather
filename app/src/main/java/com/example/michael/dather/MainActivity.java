@@ -1,43 +1,25 @@
 package com.example.michael.dather;
 
-import android.Manifest;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
-import android.support.v4.app.ActivityCompat;
-import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.View;
-import android.widget.CheckBox;
-import android.widget.TextView;
-
 import com.example.michael.dather.API.APIService;
-
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
-
 import java.io.IOException;
 import java.util.ArrayList;
 
 public class MainActivity extends AppCompatActivity {
-
-    CheckBox recordingPermission;
-    final int PERMISSION_RECORD_AUDIO = 0;
-    CheckBox locationPermission;
-    final int PERMISSION_ACCESS_FINE_LOCATION = 1;
-    final int PERMISSION_INTERNET = 2;
     boolean sensoring = false;
-
     Sensors sensor;
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -53,9 +35,6 @@ public class MainActivity extends AppCompatActivity {
             Intent myIntent2 = new Intent(this, PermissionsActivity.class);
             startActivity(myIntent2);
         }
-
-
-        //permissionInternet();
 
         //sendToServer();
 
@@ -89,8 +68,6 @@ public class MainActivity extends AppCompatActivity {
                         }
                     };
                     handler.postDelayed(r, 500);
-
-
                 } else {
                     try {
                         sendToServer(sensor.params);
@@ -105,30 +82,6 @@ public class MainActivity extends AppCompatActivity {
 
             }
         });
-    }
-
-    @Override
-    public void onRequestPermissionsResult(int requestCode, String permissions[], int[] grantResults) {
-        switch (requestCode) {
-            case PERMISSION_RECORD_AUDIO: {
-                if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                    recordingPermission.setChecked(true);
-                }
-                else {
-                    recordingPermission.setChecked(false);
-                }
-                return;
-            }
-            case PERMISSION_ACCESS_FINE_LOCATION: {
-                if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                    recordingPermission.setChecked(true);
-                }
-                else {
-                    recordingPermission.setChecked(false);
-                }
-                return;
-            }
-        }
     }
 
     private void sendToServer(ArrayList<ArrayList<String>> dataSet) throws JSONException {
@@ -152,52 +105,7 @@ public class MainActivity extends AppCompatActivity {
         APIService apiService = new APIService();
         apiService.sendData(jsAr.toString());
     }
-
-//    private void permissionRecordAudio() {
-//        if (ContextCompat.checkSelfPermission(this, Manifest.permission.RECORD_AUDIO) == PackageManager.PERMISSION_GRANTED) {
-//            recordingPermission.setChecked(true);
-//        } else {
-//            recordingPermission.setOnClickListener(new View.OnClickListener() {
-//                @Override
-//                public void onClick(View v) {
-//                    if (recordingPermission.isChecked()) {
-//                        ActivityCompat.requestPermissions(MainActivity.this, new String[]{Manifest.permission.RECORD_AUDIO}, PERMISSION_RECORD_AUDIO);
-//                    }
-//                }
-//            });
-//        }
-//    }
-//
-//    private void permissionLocation() {
-//        if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
-//            locationPermission.setChecked(true);
-//        } else {
-//            locationPermission.setOnClickListener(new View.OnClickListener() {
-//                @Override
-//                public void onClick(View v) {
-//                    if (locationPermission.isChecked()) {
-//                        ActivityCompat.requestPermissions(MainActivity.this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, PERMISSION_ACCESS_FINE_LOCATION);
-//                    }
-//                }
-//            });
-//        }
-//    }
-//
-//    private void permissionInternet() {
-//        if (ContextCompat.checkSelfPermission(this, Manifest.permission.INTERNET) == PackageManager.PERMISSION_GRANTED) {
-//        } else {
-//            locationPermission.setOnClickListener(new View.OnClickListener() {
-//                @Override
-//                public void onClick(View v) {
-//                    if (locationPermission.isChecked()) {
-//                        ActivityCompat.requestPermissions(MainActivity.this, new String[]{Manifest.permission.INTERNET}, PERMISSION_INTERNET);
-//                    }
-//                }
-//            });
-//        }
-//    }
-
-
+    
 /* NOT USED AT THIS TIME
     private String readFromFile() {
 

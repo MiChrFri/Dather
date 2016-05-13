@@ -2,7 +2,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#252525"
+    android:background="@color/colorDarkBG"
     tools:context="com.example.michael.dather.PermissionsActivity">
 
     <TextView
@@ -12,7 +12,7 @@
         android:gravity="center"
         android:keepScreenOn="true"
         android:padding="10pt"
-        android:textColor="#efefef"
+        android:textColor="@color/colorLight"
         android:textSize="12sp"
         android:text="HEY, I need you permissions to spy on you :D"
         android:textStyle="bold"
