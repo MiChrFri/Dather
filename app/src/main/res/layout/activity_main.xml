@@ -24,11 +24,39 @@
     <include layout="@layout/content_main" />
 
     <android.support.design.widget.FloatingActionButton
-        android:id="@+id/fab"
+        android:id="@+id/gather"
+        android:layout_width="80dp"
+        android:layout_height="80dp"
+        android:layout_gravity="bottom|center"
+        android:layout_margin="@dimen/fab_margin"
+        android:src="@drawable/ic_play_dark" />
+
+    <android.support.design.widget.FloatingActionButton
+        android:id="@+id/stop"
+        android:visibility="invisible"
+        android:layout_width="80dp"
+        android:layout_height="80dp"
+        android:layout_gravity="bottom|center"
+        android:layout_margin="@dimen/fab_margin"
+        android:src="@drawable/ic_pause_dark" />
+
+    <android.support.design.widget.FloatingActionButton
+        android:id="@+id/send"
+        android:visibility="invisible"
+        android:layout_width="80dp"
+        android:layout_height="80dp"
+        android:layout_gravity="bottom|center"
+        android:layout_margin="@dimen/fab_margin"
+        android:src="@drawable/abc_ic_menu_share_mtrl_alpha" />
+
+    <android.support.design.widget.FloatingActionButton
+        android:id="@+id/gatherAgain"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_gravity="bottom|end"
+        android:layout_gravity="bottom|left"
         android:layout_margin="@dimen/fab_margin"
-        android:src="@drawable/abc_btn_rating_star_off_mtrl_alpha" />
+        android:visibility="invisible"
+        android:src="@drawable/ic_play_dark" />
+
 
 </android.support.design.widget.CoordinatorLayout>

@@ -3,6 +3,8 @@ package com.example.michael.dather;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Color;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.design.widget.FloatingActionButton;
@@ -18,6 +20,10 @@ import java.io.IOException;
 import java.util.ArrayList;
 
 public class MainActivity extends AppCompatActivity {
+    FloatingActionButton gatherBtn;
+    FloatingActionButton stopBtn;
+    FloatingActionButton sendBtn;
+
     boolean sensoring = false;
     Sensors sensor;
 
@@ -36,18 +42,21 @@ public class MainActivity extends AppCompatActivity {
             startActivity(myIntent2);
         }
 
-        //sendToServer();
-
         setContentView(R.layout.activity_main);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        final FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
+        setupStartBtn();
+        setupStopBtn();
+        setupSendBtn();
+    }
 
-        fab.setOnClickListener(new View.OnClickListener() {
+
+    private void setupStartBtn() {
+        gatherBtn = (FloatingActionButton) findViewById(R.id.gather);
+        gatherBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
                 if (!sensoring) {
                     Snackbar snackbar;
                     snackbar = Snackbar.make(view, "Sensoring . . .", Snackbar.LENGTH_INDEFINITE);
@@ -56,9 +65,11 @@ public class MainActivity extends AppCompatActivity {
                     snackbar.show();
 
                     sensoring = true;
+                    gatherBtn.setVisibility(View.INVISIBLE);
+                    stopBtn.setVisibility(View.VISIBLE);
 
-                    Handler handler=new Handler();
-                    Runnable r=new Runnable() {
+                    Handler handler = new Handler();
+                    Runnable r = new Runnable() {
                         public void run() {
                             try {
                                 sensor = new Sensors(getApplicationContext(), 1000);
@@ -68,19 +79,58 @@ public class MainActivity extends AppCompatActivity {
                         }
                     };
                     handler.postDelayed(r, 500);
-                } else {
-                    try {
-                        sendToServer(sensor.params);
-                    } catch (JSONException e) {
-                        e.printStackTrace();
-                    }
-
-                    Snackbar.make(view, "STOPPED SENSORING", Snackbar.LENGTH_LONG)
-                            .setAction("Action", null).show();
-                    sensor.running = false;
-                    sensoring = false;
                 }
+            }
+        });
+    }
 
+
+    private void setupStopBtn() {
+        stopBtn = (FloatingActionButton) findViewById(R.id.stop);
+        stopBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (sensoring) {
+                    Snackbar snackbar;
+                    snackbar = Snackbar.make(view, "Stopped sensoring", Snackbar.LENGTH_SHORT);
+                    View snackBarView = snackbar.getView();
+                    snackBarView.setBackgroundColor(Color.parseColor("#35AAF5"));
+                    snackbar.show();
+
+                    sensoring = false;
+                    stopBtn.setVisibility(View.INVISIBLE);
+                    sendBtn.setVisibility(View.VISIBLE);
+
+                    sensor.running = false;
+                }
+            }
+        });
+    }
+
+    private void setupSendBtn() {
+        sendBtn = (FloatingActionButton) findViewById(R.id.send);
+        sendBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Snackbar snackbar;
+                snackbar = Snackbar.make(view, "Sending . . .", Snackbar.LENGTH_SHORT);
+                View snackBarView = snackbar.getView();
+                snackBarView.setBackgroundColor(Color.parseColor("#31C154"));
+                snackbar.show();
+
+                sendBtn.setVisibility(View.INVISIBLE);
+
+                Handler handler=new Handler();
+                Runnable r=new Runnable() {
+                    public void run() {
+                        try {
+                            sendToServer(sensor.params);
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                };
+                handler.postDelayed(r, 500);
             }
         });
     }
@@ -103,8 +153,24 @@ public class MainActivity extends AppCompatActivity {
             jsAr.put(obj);
         }
 
-        APIService apiService = new APIService();
-        apiService.sendData(jsAr.toString());
+        if(isConnected()) {
+            APIService apiService = new APIService();
+            apiService.sendData(jsAr.toString());
+        }
+        else {
+            Snackbar snackbar;
+            snackbar = Snackbar.make(findViewById(android.R.id.content), "No internet connection", Snackbar.LENGTH_SHORT);
+            View snackBarView = snackbar.getView();
+            snackBarView.setBackgroundColor(Color.parseColor("#F71114"));
+            snackbar.show();
+        }
+    }
+
+    private boolean isConnected() {
+        ConnectivityManager manager = (ConnectivityManager)getSystemService(CONNECTIVITY_SERVICE);
+        NetworkInfo info = manager.getActiveNetworkInfo();
+
+        return info != null && info.isConnected()? true : false;
     }
 
 /* NOT USED AT THIS TIME
