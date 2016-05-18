@@ -3,7 +3,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/colorDarkBG"
-    tools:context="com.example.michael.dather.PermissionsActivity">
+    tools:context=".UI.PermissionsActivity">
 
     <TextView
         android:id="@+id/fullscreen_content"

@@ -8,13 +8,15 @@ import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import org.json.JSONObject;
 import java.io.IOException;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
 import javax.security.auth.callback.Callback;
 import okhttp3.Call;
 import okhttp3.Headers;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.Response;
-
 
 public class APIService extends AppCompatActivity {
     private final OkHttpClient client = new OkHttpClient();
@@ -24,14 +26,12 @@ public class APIService extends AppCompatActivity {
         this.callback = callback;
     }
 
-    public APIService() {}
-
     public void ApiRequest(Request request) {
         client.newCall(request).enqueue(new okhttp3.Callback() {
             @Override
             public void onFailure(Call call, IOException e) {
                 e.printStackTrace();
-                callback.receivedResponse("?");
+                callback.receivedResponse(false);
             }
 
             @Override
@@ -44,13 +44,19 @@ public class APIService extends AppCompatActivity {
                 }
 
                 String responseBody = response.body().string();
-                if (responseBody == null) {
-                    responseBody = "";
+
+                Matcher m = Pattern.compile("\"([^)]+)\"").matcher(responseBody);
+                String responseTxt = "";
+                while(m.find()) {
+                    responseTxt = m.group(1);
                 }
 
-                Log.i("D", responseBody);
+                Boolean returnValue = false;
+                if (responseTxt.equals("SUCCESS")) {
+                    returnValue = true;
+                }
 
-                //callback.receivedResponse(responseBody);
+                callback.receivedResponse(returnValue);
             }
         });
     }
@@ -64,32 +70,5 @@ public class APIService extends AppCompatActivity {
             e.printStackTrace();
         }
     }
-
-    protected JSONObject getParamsJSON(String[] keys, String[] values) {
-        int numberOfParameters = keys.length;
-
-        if(numberOfParameters > 0) {
-            try{
-                JSONObject paramsJson = new JSONObject();
-
-                // add key value pairs to JSONObject
-                for(int i = 0; i < numberOfParameters; i++) {
-                    if(i <= values.length) {
-                        paramsJson.put(keys[i], values[i]);
-                    }
-                    else {
-                        paramsJson.put(keys[i], "");
-                    }
-                }
-
-                return paramsJson;
-            }
-            catch(Exception e) {
-                e.printStackTrace();
-            }
-        }
-        return null;
-    }
-
 }
 

@@ -1,5 +1,6 @@
-package com.example.michael.dather;
+package com.example.michael.dather.UI;
 
+import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Color;
@@ -11,12 +12,22 @@ import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.View;
 import com.example.michael.dather.API.APIService;
+import com.example.michael.dather.API.ApiCallback;
+import com.example.michael.dather.R;
+import com.example.michael.dather.Sensors;
+
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+import java.io.BufferedReader;
+import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.OutputStreamWriter;
 import java.util.ArrayList;
 
 public class MainActivity extends AppCompatActivity {
@@ -24,8 +35,9 @@ public class MainActivity extends AppCompatActivity {
     FloatingActionButton stopBtn;
     FloatingActionButton sendBtn;
 
+    String dataString;
     boolean sensoring = false;
-    Sensors sensor;
+    public Sensors sensor;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -46,11 +58,19 @@ public class MainActivity extends AppCompatActivity {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        setupStartBtn();
-        setupStopBtn();
-        setupSendBtn();
-    }
+        String read = readFromFile();
 
+        if (read != "") {
+            dataString = read;
+            setupSendBtn();
+            sendBtn.setVisibility(View.VISIBLE);
+        }
+        else {
+            setupStartBtn();
+            setupStopBtn();
+            setupSendBtn();
+        }
+    }
 
     private void setupStartBtn() {
         gatherBtn = (FloatingActionButton) findViewById(R.id.gather);
@@ -84,7 +104,6 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
-
     private void setupStopBtn() {
         stopBtn = (FloatingActionButton) findViewById(R.id.stop);
         stopBtn.setOnClickListener(new View.OnClickListener() {
@@ -101,6 +120,13 @@ public class MainActivity extends AppCompatActivity {
                     stopBtn.setVisibility(View.INVISIBLE);
                     sendBtn.setVisibility(View.VISIBLE);
 
+                    try {
+                        dataString = datasetToJSONStr(sensor.params);
+                        writeToFile(dataString);
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+
                     sensor.running = false;
                 }
             }
@@ -112,30 +138,27 @@ public class MainActivity extends AppCompatActivity {
         sendBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Snackbar snackbar;
-                snackbar = Snackbar.make(view, "Sending . . .", Snackbar.LENGTH_SHORT);
-                View snackBarView = snackbar.getView();
-                snackBarView.setBackgroundColor(Color.parseColor("#31C154"));
-                snackbar.show();
-
-                sendBtn.setVisibility(View.INVISIBLE);
-
-                Handler handler=new Handler();
-                Runnable r=new Runnable() {
+                Handler handler = new Handler();
+                Runnable r = new Runnable() {
                     public void run() {
                         try {
-                            sendToServer(sensor.params);
+                            sendToServer();
                         } catch (JSONException e) {
                             e.printStackTrace();
                         }
                     }
                 };
-                handler.postDelayed(r, 500);
+                handler.postDelayed(r, 0);
             }
         });
     }
 
-    private void sendToServer(ArrayList<ArrayList<String>> dataSet) throws JSONException {
+    private void getToAsk() {
+        Intent myIntent = new Intent(this, AskActivity.class);
+        startActivity(myIntent);
+    }
+
+    private String datasetToJSONStr(ArrayList<ArrayList<String>> dataSet) throws JSONException {
         JSONArray jsAr = new JSONArray();
 
         for(ArrayList<String> list : dataSet) {
@@ -153,17 +176,47 @@ public class MainActivity extends AppCompatActivity {
             jsAr.put(obj);
         }
 
-        if(isConnected()) {
-            APIService apiService = new APIService();
-            apiService.sendData(jsAr.toString());
+        return jsAr.toString();
+    }
+
+    private void sendToServer() throws JSONException {
+
+        Log.i("DATASTRING", dataString);
+
+        if(isConnected() && dataString != "") {
+            APIService apiService = new APIService(new ApiCallback() {
+                @Override
+                public void receivedResponse(Boolean success) {
+
+                    if(success) {
+                        getToAsk();
+                    }
+                    else {
+                        String message = "failed to send";
+                        String colorStr = "#ff0066";
+                        Snackbar snackbar;
+                        snackbar = Snackbar.make(findViewById(android.R.id.content), message, Snackbar.LENGTH_SHORT);
+                        View snackBarView = snackbar.getView();
+                        snackBarView.setBackgroundColor(Color.parseColor(colorStr));
+                        snackbar.show();
+                    }
+                }
+            });
+
+            apiService.sendData(dataString);
+            showSnackbar("#31C154", "Sending . . .", Snackbar.LENGTH_SHORT);
+            sendBtn.setVisibility(View.INVISIBLE);
         }
         else {
-            Snackbar snackbar;
-            snackbar = Snackbar.make(findViewById(android.R.id.content), "No internet connection", Snackbar.LENGTH_SHORT);
-            View snackBarView = snackbar.getView();
-            snackBarView.setBackgroundColor(Color.parseColor("#F71114"));
-            snackbar.show();
+            showSnackbar("#F71114", "No internet connection", Snackbar.LENGTH_SHORT);
         }
+    }
+
+    private void showSnackbar(String colorCode, String message, int length) {
+        Snackbar snackbar = Snackbar.make(findViewById(android.R.id.content), message, length);
+        View snackBarView = snackbar.getView();
+        snackBarView.setBackgroundColor(Color.parseColor(colorCode));
+        snackbar.show();
     }
 
     private boolean isConnected() {
@@ -173,13 +226,11 @@ public class MainActivity extends AppCompatActivity {
         return info != null && info.isConnected()? true : false;
     }
 
-/* NOT USED AT THIS TIME
     private String readFromFile() {
-
         String ret = "";
 
         try {
-            InputStream inputStream = openFileInput("myFile.txt");
+            InputStream inputStream = openFileInput("dataset.txt");
 
             if ( inputStream != null ) {
                 InputStreamReader inputStreamReader = new InputStreamReader(inputStream);
@@ -201,32 +252,20 @@ public class MainActivity extends AppCompatActivity {
             Log.e("ASDAS", "Can not read file: " + e.toString());
         }
 
-
-        Intent i = new Intent(Intent.ACTION_SEND);
-        i.setType("message/rfc822");
-        i.putExtra(Intent.EXTRA_EMAIL  , new String[]{"frickm@tcd.ie"});
-        i.putExtra(Intent.EXTRA_SUBJECT, "subject of email");
-        i.putExtra(Intent.EXTRA_TEXT   , ret);
-        try {
-            startActivity(Intent.createChooser(i, "Send mail..."));
-        } catch (android.content.ActivityNotFoundException ex) {
-            Toast.makeText(this, "There are no email clients installed.", Toast.LENGTH_SHORT).show();
-        }
-
         return ret;
     }
 
+
     private void writeToFile(String data) {
         try {
-            OutputStreamWriter outputStreamWriter = new OutputStreamWriter(openFileOutput("myFile.txt", Context.MODE_PRIVATE));
+            String fileName = "dataset.txt";
+
+            OutputStreamWriter outputStreamWriter = new OutputStreamWriter(openFileOutput(fileName, Context.MODE_PRIVATE));
             outputStreamWriter.write(data + "\r\n");
             outputStreamWriter.close();
         }
         catch (IOException e) {
             Log.e("FAILED", "File write failed: " + e.toString());
         }
-
     }
-    */
-
 }

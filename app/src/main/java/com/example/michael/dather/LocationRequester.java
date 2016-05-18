@@ -8,24 +8,22 @@ import android.location.LocationListener;
 import android.location.LocationManager;
 import android.os.Bundle;
 import android.support.v4.app.ActivityCompat;
-import android.util.Log;
 
 /**
  * Created by michael on 04/05/16.
  */
 public class LocationRequester implements LocationListener {
-
     LocationManager locationManager;
-    Location location; // Location
-    double latitude; // Latitude
-    double longitude; // Longitude
+    Location location;
+    double latitude;
+    double longitude;
     Context servingContext;
 
     // The minimum distance to change Updates in meters
     private static final long MIN_DISTANCE_CHANGE_FOR_UPDATES = 10; // 10 meters
 
     // The minimum time between updates in milliseconds
-    private static final long MIN_TIME_BW_UPDATES = 1000 * 60 * 1; // 1 minute
+    private static final long MIN_TIME_BW_UPDATES = 1000; // 1 second
 
     public LocationRequester(Context context) {
         servingContext = context;
@@ -83,24 +81,18 @@ public class LocationRequester implements LocationListener {
 
     @Override
     public void onLocationChanged(Location location) {
-        double latitude = location.getLatitude();
-        double longitude = location.getLongitude();
-
-        Log.i("Location update", "Latitude: " + latitude + ", Longitude: " + longitude);
+//        double latitude = location.getLatitude();
+//        double longitude = location.getLongitude();
+//
+//        Log.i("Location update", "Latitude: " + latitude + ", Longitude: " + longitude);
     }
 
     @Override
-    public void onStatusChanged(String provider, int status, Bundle extras) {
-
-    }
+    public void onStatusChanged(String provider, int status, Bundle extras) {}
 
     @Override
-    public void onProviderEnabled(String provider) {
-
-    }
+    public void onProviderEnabled(String provider) {}
 
     @Override
-    public void onProviderDisabled(String provider) {
-
-    }
+    public void onProviderDisabled(String provider) {}
 }

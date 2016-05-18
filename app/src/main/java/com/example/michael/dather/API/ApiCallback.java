@@ -5,5 +5,5 @@ package com.example.michael.dather.API;
  */
 
 public interface ApiCallback {
-    void receivedResponse(String responseString);
+    void receivedResponse(Boolean success);
 }

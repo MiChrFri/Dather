@@ -19,7 +19,7 @@ public class Sensors implements Runnable {
     Context servingContext;
     SensorManager sensorManager;
     int SAMPLING_RATE;
-    boolean running = false;
+    public boolean running = false;
 
     final float[] lightValue = {0};
     final float[] stepValue = {0};
@@ -31,7 +31,7 @@ public class Sensors implements Runnable {
     private Handler handler = new Handler();
 
 
-    ArrayList<ArrayList<String>> params = new ArrayList<ArrayList<String>>();
+    public ArrayList<ArrayList<String>> params = new ArrayList<ArrayList<String>>();
 
     /** CONSTRUCTOR */
     public Sensors(Context context, final int samplingRate) throws IOException {

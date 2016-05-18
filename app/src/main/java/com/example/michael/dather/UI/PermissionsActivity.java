@@ -1,4 +1,4 @@
-package com.example.michael.dather;
+package com.example.michael.dather.UI;
 
 import android.Manifest;
 import android.content.Intent;
@@ -11,6 +11,8 @@ import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.Button;
 import android.widget.CheckBox;
+
+import com.example.michael.dather.R;
 
 public class PermissionsActivity extends AppCompatActivity {
     CheckBox recordingPermission;
