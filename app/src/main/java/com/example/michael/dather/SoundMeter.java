@@ -9,23 +9,14 @@ import android.media.MediaRecorder;
 import android.util.Log;
 
 public class SoundMeter {
-
     private AudioRecord ar = null;
-    private int minSize;
 
     public void start() {
-       // minSize= AudioRecord.getMinBufferSize(8000, AudioFormat.CHANNEL_IN_MONO, AudioFormat.ENCODING_PCM_16BIT);
-       // ar = new AudioRecord(MediaRecorder.AudioSource.MIC, 8000,AudioFormat.CHANNEL_IN_MONO, AudioFormat.ENCODING_PCM_16BIT,minSize);
-       // ar.startRecording();
-
         android.os.Process.setThreadPriority(android.os.Process.THREAD_PRIORITY_URGENT_AUDIO);
 
-        short bufferSize = 4096;// 2048;
+        short bufferSize = 4096;
 
-
-        ar  = new AudioRecord(MediaRecorder.AudioSource.MIC, 8000, AudioFormat.CHANNEL_IN_MONO, AudioFormat.ENCODING_PCM_16BIT, bufferSize); //object not created
-
-        short[] tempBuffer = new short[bufferSize];
+        ar  = new AudioRecord(MediaRecorder.AudioSource.MIC, 8000, AudioFormat.CHANNEL_IN_MONO, AudioFormat.ENCODING_PCM_16BIT, bufferSize);
         ar.startRecording();
     }
 
@@ -40,22 +31,14 @@ public class SoundMeter {
         short data [] = new short[bufferSize];
 
         ar.startRecording();
-
         ar.read(data, 0, bufferSize);
-
         ar.stop();
 
-        for (short s : data)
-        {
-            try {
-                Thread.sleep((long) 300.00);
-            } catch (InterruptedException e) {
-                // TODO Auto-generated catch block
-                e.printStackTrace();
-            }
-            return(Math.abs(s));
+        if(data.length > 0) {
+            return(Math.abs(data[0]));
         }
-       return 0;
+        else {
+            return 0;
+        }
     }
-
 }

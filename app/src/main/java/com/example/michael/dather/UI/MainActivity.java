@@ -7,6 +7,7 @@ import android.graphics.Color;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Bundle;
+import android.os.Environment;
 import android.os.Handler;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
@@ -23,7 +24,9 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 import java.io.BufferedReader;
+import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -180,9 +183,6 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void sendToServer() throws JSONException {
-
-        Log.i("DATASTRING", dataString);
-
         if(isConnected() && dataString != "") {
             APIService apiService = new APIService(new ApiCallback() {
                 @Override
@@ -223,7 +223,7 @@ public class MainActivity extends AppCompatActivity {
         ConnectivityManager manager = (ConnectivityManager)getSystemService(CONNECTIVITY_SERVICE);
         NetworkInfo info = manager.getActiveNetworkInfo();
 
-        return info != null && info.isConnected()? true : false;
+        return info != null && info.isConnected();
     }
 
     private String readFromFile() {
@@ -255,13 +255,12 @@ public class MainActivity extends AppCompatActivity {
         return ret;
     }
 
-
     private void writeToFile(String data) {
         try {
             String fileName = "dataset.txt";
 
             OutputStreamWriter outputStreamWriter = new OutputStreamWriter(openFileOutput(fileName, Context.MODE_PRIVATE));
-            outputStreamWriter.write(data + "\r\n");
+            outputStreamWriter.write(data);
             outputStreamWriter.close();
         }
         catch (IOException e) {

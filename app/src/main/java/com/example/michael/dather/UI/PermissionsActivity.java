@@ -36,6 +36,8 @@ public class PermissionsActivity extends AppCompatActivity {
 
         internetPermission = (CheckBox) findViewById(R.id.checkBox3);
         permissionInternet();
+
+        permissionSD();
     }
 
     private void permissionRecordAudio() {
@@ -85,6 +87,13 @@ public class PermissionsActivity extends AppCompatActivity {
             });
         }
     }
+
+
+
+    private void permissionSD() {
+        ActivityCompat.requestPermissions(PermissionsActivity.this, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, 4);
+    }
+
 
     @Override
     public void onRequestPermissionsResult(int requestCode, String permissions[], int[] grantResults) {

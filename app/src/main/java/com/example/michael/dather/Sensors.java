@@ -21,9 +21,11 @@ public class Sensors implements Runnable {
     int SAMPLING_RATE;
     public boolean running = false;
 
+    SoundMeter soundmeter;
+
     final float[] lightValue = {0};
     final float[] stepValue = {0};
-    final float[] accelerometerValueX = {0};
+    private float accelerometerValueX = 0f;
     final float[] accelerometerValueY = {0};
     final float[] accelerometerValueZ = {0};
     final double[] latitude = {0};
@@ -53,7 +55,7 @@ public class Sensors implements Runnable {
             list.add(String.valueOf(lightValue[0]));
             list.add(String.valueOf(stepValue[0]));
             list.add(String.valueOf(getSoundVolume()));
-            list.add(String.valueOf(accelerometerValueX[0]));
+            list.add(String.valueOf(accelerometerValueX));
             list.add(String.valueOf(accelerometerValueY[0]));
             list.add(String.valueOf(accelerometerValueZ[0]));
             list.add(String.valueOf(longitude[0]));
@@ -64,6 +66,11 @@ public class Sensors implements Runnable {
 
             if(running) {
                 handler.postDelayed(this, SAMPLING_RATE);
+            }
+            else {
+                if(soundmeter != null) {
+                    soundmeter.stop();
+                }
             }
         }
     };
@@ -79,7 +86,7 @@ public class Sensors implements Runnable {
     }
 
     private double getSoundVolume() {
-        final SoundMeter soundmeter = new SoundMeter();
+        soundmeter = new SoundMeter();
         soundmeter.start();
 
         soundmeter.getAmplitude();
@@ -136,7 +143,7 @@ public class Sensors implements Runnable {
             SensorEventListener listener = new SensorEventListener() {
                 @Override
                 public void onSensorChanged(SensorEvent event) {
-                    accelerometerValueX[0] = event.values[0];
+                    accelerometerValueX = event.values[0];
                     accelerometerValueY[0] = event.values[1];
                     accelerometerValueZ[0] = event.values[2];
                 }
