@@ -4,6 +4,8 @@ package com.example.michael.dather.API;
  * Created by michael on 09/05/16.
  */
 
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import org.json.JSONObject;
@@ -44,6 +46,8 @@ public class APIService extends AppCompatActivity {
                 }
 
                 String responseBody = response.body().string();
+
+                Log.i("RESPONSE HEADER:", responseBody);
 
                 Matcher m = Pattern.compile("\"([^)]+)\"").matcher(responseBody);
                 String responseTxt = "";

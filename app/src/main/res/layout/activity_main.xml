@@ -28,34 +28,32 @@
         android:layout_width="80dp"
         android:layout_height="80dp"
         android:layout_gravity="bottom|center"
-        android:layout_margin="@dimen/fab_margin"
+        android:layout_marginBottom="70dp"
         android:src="@drawable/ic_play_dark" />
 
     <android.support.design.widget.FloatingActionButton
         android:id="@+id/stop"
-        android:visibility="invisible"
         android:layout_width="80dp"
         android:layout_height="80dp"
         android:layout_gravity="bottom|center"
-        android:layout_margin="@dimen/fab_margin"
+        android:layout_marginBottom="70dp"
         android:src="@drawable/ic_pause_dark" />
 
     <android.support.design.widget.FloatingActionButton
         android:id="@+id/send"
-        android:visibility="invisible"
         android:layout_width="80dp"
         android:layout_height="80dp"
         android:layout_gravity="bottom|center"
-        android:layout_margin="@dimen/fab_margin"
+        android:layout_marginBottom="70dp"
         android:src="@drawable/abc_ic_menu_share_mtrl_alpha" />
 
     <android.support.design.widget.FloatingActionButton
         android:id="@+id/gatherAgain"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="60dp"
+        android:layout_height="60dp"
         android:layout_gravity="bottom|left"
-        android:layout_margin="@dimen/fab_margin"
-        android:visibility="invisible"
+        android:layout_marginBottom="80dp"
+        android:layout_marginLeft="20dp"
         android:src="@drawable/ic_play_dark" />
 
 

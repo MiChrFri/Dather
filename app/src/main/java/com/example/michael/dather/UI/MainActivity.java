@@ -15,6 +15,8 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.View;
+import android.widget.EditText;
+
 import com.example.michael.dather.API.APIService;
 import com.example.michael.dather.API.ApiCallback;
 import com.example.michael.dather.R;
@@ -31,16 +33,22 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
+import java.io.UnsupportedEncodingException;
+import java.math.BigInteger;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 
 public class MainActivity extends AppCompatActivity {
     FloatingActionButton gatherBtn;
     FloatingActionButton stopBtn;
     FloatingActionButton sendBtn;
+    FloatingActionButton restartBtn;
 
     String dataString;
     boolean sensoring = false;
     public Sensors sensor;
+    private EditText emailInput;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -63,15 +71,30 @@ public class MainActivity extends AppCompatActivity {
 
         String read = readFromFile();
 
+        setupStartBtn();
+        setupStopBtn();
+        setupSendBtn();
+        setupRestartBtn();
+
+
+        emailInput = (EditText) findViewById(R.id.editText);
+        if(getUserMail() != null) {
+            emailInput.setText(getUserMail());
+        }
+
+
         if (read != "") {
             dataString = read;
-            setupSendBtn();
+            gatherBtn.setVisibility(View.INVISIBLE);
+            stopBtn.setVisibility(View.INVISIBLE);
             sendBtn.setVisibility(View.VISIBLE);
+            restartBtn.setVisibility(View.VISIBLE);
         }
         else {
-            setupStartBtn();
-            setupStopBtn();
-            setupSendBtn();
+            gatherBtn.setVisibility(View.VISIBLE);
+            stopBtn.setVisibility(View.INVISIBLE);
+            sendBtn.setVisibility(View.INVISIBLE);
+            restartBtn.setVisibility(View.INVISIBLE);
         }
     }
 
@@ -80,29 +103,7 @@ public class MainActivity extends AppCompatActivity {
         gatherBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if (!sensoring) {
-                    Snackbar snackbar;
-                    snackbar = Snackbar.make(view, "Sensoring . . .", Snackbar.LENGTH_INDEFINITE);
-                    View snackBarView = snackbar.getView();
-                    snackBarView.setBackgroundColor(Color.parseColor("#cc0000"));
-                    snackbar.show();
-
-                    sensoring = true;
-                    gatherBtn.setVisibility(View.INVISIBLE);
-                    stopBtn.setVisibility(View.VISIBLE);
-
-                    Handler handler = new Handler();
-                    Runnable r = new Runnable() {
-                        public void run() {
-                            try {
-                                sensor = new Sensors(getApplicationContext(), 1000);
-                            } catch (IOException e) {
-                                e.printStackTrace();
-                            }
-                        }
-                    };
-                    handler.postDelayed(r, 500);
-                }
+                startGathering();
             }
         });
     }
@@ -141,6 +142,8 @@ public class MainActivity extends AppCompatActivity {
         sendBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                restartBtn.setVisibility(View.VISIBLE);
+
                 Handler handler = new Handler();
                 Runnable r = new Runnable() {
                     public void run() {
@@ -156,6 +159,45 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
+    private void setupRestartBtn() {
+        restartBtn = (FloatingActionButton) findViewById(R.id.gatherAgain);
+        restartBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                startGathering();
+            }
+        });
+    }
+
+    private void startGathering() {
+        final String userId = genUserID();
+        saveStringId(genUserID(), "userID");
+
+        if(userId == null) {
+            showSnackbar("#31C154", "Please, add your email address first", Snackbar.LENGTH_SHORT);
+        }
+        else if(!sensoring) {
+            showSnackbar("#cc0000", "Sensoring . . .", Snackbar.LENGTH_INDEFINITE);
+
+            sensoring = true;
+            gatherBtn.setVisibility(View.INVISIBLE);
+            stopBtn.setVisibility(View.VISIBLE);
+            restartBtn.setVisibility(View.INVISIBLE);
+
+            Handler handler = new Handler();
+            Runnable r = new Runnable() {
+                public void run() {
+                    try {
+                        sensor = new Sensors(getApplicationContext(), 1000, userId);
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                }
+            };
+            handler.postDelayed(r, 0);
+        }
+    }
+
     private void getToAsk() {
         Intent myIntent = new Intent(this, AskActivity.class);
         startActivity(myIntent);
@@ -166,19 +208,19 @@ public class MainActivity extends AppCompatActivity {
 
         for(ArrayList<String> list : dataSet) {
             JSONObject obj = new JSONObject();
-            obj.put("timestamp", list.get(0));
-            obj.put("light", list.get(1));
-            obj.put("steps", list.get(2));
-            obj.put("volume", list.get(3));
-            obj.put("accX", list.get(4));
-            obj.put("accY", list.get(5));
-            obj.put("accZ", list.get(6));
-            obj.put("latitude", list.get(7));
-            obj.put("longitude", list.get(8));
+            obj.put("user_id", list.get(0));
+            obj.put("timestamp", list.get(1));
+            obj.put("light", list.get(2));
+            obj.put("steps", list.get(3));
+            obj.put("volume", list.get(4));
+            obj.put("accX", list.get(5));
+            obj.put("accY", list.get(6));
+            obj.put("accZ", list.get(7));
+            obj.put("latitude", list.get(8));
+            obj.put("longitude", list.get(9));
 
             jsAr.put(obj);
         }
-
         return jsAr.toString();
     }
 
@@ -187,7 +229,6 @@ public class MainActivity extends AppCompatActivity {
             APIService apiService = new APIService(new ApiCallback() {
                 @Override
                 public void receivedResponse(Boolean success) {
-
                     if(success) {
                         getToAsk();
                     }
@@ -205,7 +246,6 @@ public class MainActivity extends AppCompatActivity {
 
             apiService.sendData(dataString);
             showSnackbar("#31C154", "Sending . . .", Snackbar.LENGTH_SHORT);
-            sendBtn.setVisibility(View.INVISIBLE);
         }
         else {
             showSnackbar("#F71114", "No internet connection", Snackbar.LENGTH_SHORT);
@@ -224,6 +264,47 @@ public class MainActivity extends AppCompatActivity {
         NetworkInfo info = manager.getActiveNetworkInfo();
 
         return info != null && info.isConnected();
+    }
+
+    private String genUserID() {
+        String email = String.valueOf(emailInput.getText());
+
+        if (android.util.Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
+            MessageDigest md;
+
+            saveStringId(email, "email");
+
+            try {
+                md = MessageDigest.getInstance("SHA-256");
+                md.update(email.getBytes("UTF-8"));
+
+                byte[] hash = md.digest();
+                BigInteger bigInt = new BigInteger(1, hash);
+                return bigInt.toString(16);
+            } catch (NoSuchAlgorithmException e) {
+                e.printStackTrace();
+            } catch (UnsupportedEncodingException e) {
+                e.printStackTrace();
+            }
+        }
+        return null;
+    }
+
+    private void saveStringId(String inptStr, String key){
+        SharedPreferences preferences = getApplicationContext().getSharedPreferences("user", Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = preferences.edit();
+        editor.putString(key, inptStr);
+        editor.commit();
+    }
+
+    private String getUserId(){
+        SharedPreferences preferences = getApplicationContext().getSharedPreferences("user", Context.MODE_PRIVATE);
+        return preferences.getString("userID", null);
+    }
+
+    private String getUserMail(){
+        SharedPreferences preferences = getApplicationContext().getSharedPreferences("user", Context.MODE_PRIVATE);
+        return preferences.getString("email", null);
     }
 
     private String readFromFile() {

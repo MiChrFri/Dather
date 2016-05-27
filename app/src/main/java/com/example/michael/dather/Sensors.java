@@ -23,23 +23,25 @@ public class Sensors implements Runnable {
 
     SoundMeter soundmeter;
 
-    final float[] lightValue = {0};
-    final float[] stepValue = {0};
+    private String userId = "";
+    private float lightValue = 0f;
+    private float stepValue = 0f;
     private float accelerometerValueX = 0f;
-    final float[] accelerometerValueY = {0};
-    final float[] accelerometerValueZ = {0};
-    final double[] latitude = {0};
-    final double[] longitude = {0};
+    private float accelerometerValueY = 0f;
+    private float accelerometerValueZ = 0f;
+    private double latitude = 0f;
+    private double longitude = 0f;
     private Handler handler = new Handler();
 
 
     public ArrayList<ArrayList<String>> params = new ArrayList<ArrayList<String>>();
 
     /** CONSTRUCTOR */
-    public Sensors(Context context, final int samplingRate) throws IOException {
-        servingContext = context;
-        sensorManager = (SensorManager) context.getSystemService(servingContext.SENSOR_SERVICE);
-        SAMPLING_RATE = samplingRate;
+    public Sensors(Context context, final int samplingRate, final String userId) throws IOException {
+        this.servingContext = context;
+        this.sensorManager = (SensorManager) context.getSystemService(servingContext.SENSOR_SERVICE);
+        this.SAMPLING_RATE = samplingRate;
+        this.userId = userId;
 
         run();
     }
@@ -51,15 +53,16 @@ public class Sensors implements Runnable {
             String ts = tsLong.toString();
 
             ArrayList<String> list = new ArrayList<>();
+            list.add(userId);
             list.add(ts);
-            list.add(String.valueOf(lightValue[0]));
-            list.add(String.valueOf(stepValue[0]));
+            list.add(String.valueOf(lightValue));
+            list.add(String.valueOf(stepValue));
             list.add(String.valueOf(getSoundVolume()));
             list.add(String.valueOf(accelerometerValueX));
-            list.add(String.valueOf(accelerometerValueY[0]));
-            list.add(String.valueOf(accelerometerValueZ[0]));
-            list.add(String.valueOf(longitude[0]));
-            list.add(String.valueOf(latitude[0]));
+            list.add(String.valueOf(accelerometerValueY));
+            list.add(String.valueOf(accelerometerValueZ));
+            list.add(String.valueOf(longitude));
+            list.add(String.valueOf(latitude));
 
             params.add(list);
             Log.i("SENSORING ...", String.valueOf(list));
@@ -97,8 +100,8 @@ public class Sensors implements Runnable {
     private void logLocation() {
         final LocationRequester locationService = new LocationRequester(servingContext);
         double[] location = locationService.getLocation();
-        latitude[0] = location[0];
-        longitude[0] = location[1];
+        latitude = location[0];
+        longitude = location[1];
     }
 
     private void logSensorSteps() {
@@ -110,7 +113,7 @@ public class Sensors implements Runnable {
             SensorEventListener listener = new SensorEventListener() {
                 @Override
                 public void onSensorChanged(SensorEvent event) {
-                    stepValue[0] = event.values[0];
+                    stepValue = event.values[0];
                 }
                 @Override
                 public void onAccuracyChanged(Sensor sensor, int accuracy) {}
@@ -126,7 +129,7 @@ public class Sensors implements Runnable {
             SensorEventListener listener = new SensorEventListener() {
                 @Override
                 public void onSensorChanged(SensorEvent event) {
-                    lightValue[0] = event.values[0];
+                    lightValue = event.values[0];
                 }
 
                 @Override
@@ -144,8 +147,8 @@ public class Sensors implements Runnable {
                 @Override
                 public void onSensorChanged(SensorEvent event) {
                     accelerometerValueX = event.values[0];
-                    accelerometerValueY[0] = event.values[1];
-                    accelerometerValueZ[0] = event.values[2];
+                    accelerometerValueY = event.values[1];
+                    accelerometerValueZ = event.values[2];
                 }
 
                 @Override
@@ -159,6 +162,9 @@ public class Sensors implements Runnable {
 
     @Override
     public void run() {
+
+        android.os.Process.setThreadPriority(android.os.Process.THREAD_PRIORITY_BACKGROUND);
+
         logSensorSteps();
         logSensorLight();
         logSensorAccelerometer();
