@@ -53,6 +53,18 @@
         android:layout_below="@+id/checkBox2"
         android:layout_alignStart="@+id/checkBox1" />
 
+    <CheckBox
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Permission for using the network state"
+        android:textColor="@color/colorLightBlue"
+        android:id="@+id/checkBox4"
+        android:theme="@style/MyCheckBox"
+        android:checked="false"
+        android:layout_gravity="center_horizontal|bottom"
+        android:layout_below="@+id/checkBox3"
+        android:layout_alignStart="@+id/checkBox1" />
+
     <Button
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"

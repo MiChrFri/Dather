@@ -328,7 +328,7 @@ public class MainActivity extends AppCompatActivity {
             }
         }
         catch (FileNotFoundException e) {
-            Log.e("LALA", "File not found: " + e.toString());
+            //Log.e("LALA", "File not found: " + e.toString());
         } catch (IOException e) {
             Log.e("ASDAS", "Can not read file: " + e.toString());
         }

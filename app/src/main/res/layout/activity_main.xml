@@ -29,7 +29,7 @@
         android:layout_height="80dp"
         android:layout_gravity="bottom|center"
         android:layout_marginBottom="70dp"
-        android:src="@drawable/ic_play_dark" />
+        android:src="@android:drawable/ic_media_play" />
 
     <android.support.design.widget.FloatingActionButton
         android:id="@+id/stop"
@@ -37,7 +37,7 @@
         android:layout_height="80dp"
         android:layout_gravity="bottom|center"
         android:layout_marginBottom="70dp"
-        android:src="@drawable/ic_pause_dark" />
+        android:src="@android:drawable/ic_media_pause" />
 
     <android.support.design.widget.FloatingActionButton
         android:id="@+id/send"
@@ -54,7 +54,7 @@
         android:layout_gravity="bottom|left"
         android:layout_marginBottom="80dp"
         android:layout_marginLeft="20dp"
-        android:src="@drawable/ic_play_dark" />
+        android:src="@android:drawable/ic_media_play" />
 
 
 </android.support.design.widget.CoordinatorLayout>

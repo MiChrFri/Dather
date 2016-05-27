@@ -21,6 +21,8 @@ public class PermissionsActivity extends AppCompatActivity {
     final int PERMISSION_ACCESS_FINE_LOCATION = 1;
     CheckBox internetPermission;
     final int PERMISSION_INTERNET = 2;
+    CheckBox networkStatePermission;
+    final int PERMISSION_NETWORK_STATE = 3;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -36,6 +38,9 @@ public class PermissionsActivity extends AppCompatActivity {
 
         internetPermission = (CheckBox) findViewById(R.id.checkBox3);
         permissionInternet();
+
+        networkStatePermission = (CheckBox) findViewById(R.id.checkBox4);
+        permissionNetState();
     }
 
     private void permissionRecordAudio() {
@@ -85,6 +90,25 @@ public class PermissionsActivity extends AppCompatActivity {
             });
         }
     }
+
+    private void permissionNetState() {
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_NETWORK_STATE) == PackageManager.PERMISSION_GRANTED) {
+            networkStatePermission.setChecked(true);
+            networkStatePermission.setClickable(false);
+        } else {
+            networkStatePermission.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    if (networkStatePermission.isChecked()) {
+                        ActivityCompat.requestPermissions(PermissionsActivity.this, new String[]{Manifest.permission.ACCESS_NETWORK_STATE}, PERMISSION_NETWORK_STATE);
+                    }
+                }
+            });
+        }
+    }
+
+
+
 
     @Override
     public void onRequestPermissionsResult(int requestCode, String permissions[], int[] grantResults) {
