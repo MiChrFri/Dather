@@ -6,10 +6,21 @@ import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
 import android.os.Handler;
+import android.text.format.DateFormat;
 import android.util.Log;
 import java.io.IOException;
+import java.security.Timestamp;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.GregorianCalendar;
 import java.util.List;
+import java.util.TimeZone;
+import java.util.concurrent.TimeUnit;
+
+import static java.util.concurrent.TimeUnit.HOURS;
 
 /**
  * Created by michael on 03/05/16.
@@ -51,6 +62,32 @@ public class Sensors implements Runnable {
         public void run() {
             Long tsLong = System.currentTimeMillis() / 1000;
             String ts = tsLong.toString();
+
+            Calendar mCalendar = new GregorianCalendar();
+            TimeZone mTimeZone = mCalendar.getTimeZone();
+            int mGMTOffset = mTimeZone.getRawOffset();
+
+
+            SimpleDateFormat dateFormatGmt = new SimpleDateFormat("yyyy-MMM-dd HH:mm:ss");
+            dateFormatGmt.setTimeZone(TimeZone.getTimeZone("UTC"));
+
+            //Local time zone
+            SimpleDateFormat dateFormatLocal = new SimpleDateFormat("yyyy-MMM-dd HH:mm:ss");
+
+            //Time in GMT
+            try {
+                String timeSTamp = "" + dateFormatLocal.parse( dateFormatGmt.format(new Date()) );
+                Log.i("TSAMP", timeSTamp);
+            } catch (ParseException e) {
+                e.printStackTrace();
+            }
+
+            TimeZone tz = TimeZone.getDefault();
+            Date now = new Date();
+            int offsetFromUtc = tz.getOffset(now.getTime()) / 1000 / 60;
+
+            String to = "GMT offset is " + offsetFromUtc + " min";
+            Log.i("<><>", to);
 
             ArrayList<String> list = new ArrayList<>();
             list.add(userId);
