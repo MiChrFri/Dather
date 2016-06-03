@@ -19,6 +19,8 @@ import android.widget.EditText;
 
 import com.example.michael.dather.API.APIService;
 import com.example.michael.dather.API.ApiCallback;
+import com.example.michael.dather.MODEL.Entry;
+import com.example.michael.dather.MODEL.MySQLiteHelper;
 import com.example.michael.dather.R;
 import com.example.michael.dather.Sensors;
 
@@ -53,6 +55,13 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        MySQLiteHelper mySQLiteHelper = new MySQLiteHelper(this);
+        //mySQLiteHelper.clearTable();
+
+
+        ArrayList<ArrayList<String>> al = mySQLiteHelper.getAllEntries();
+        Log.i("asd", al.toString());
 
         SharedPreferences mPrefs = getSharedPreferences("prefs", 0);
         if(!mPrefs.getBoolean("acceptedTerms", false)) {

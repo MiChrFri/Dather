@@ -6,10 +6,12 @@ import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
 import android.os.Handler;
-import android.text.format.DateFormat;
 import android.util.Log;
+
+import com.example.michael.dather.MODEL.Entry;
+import com.example.michael.dather.MODEL.MySQLiteHelper;
+
 import java.io.IOException;
-import java.security.Timestamp;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -18,9 +20,6 @@ import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.List;
 import java.util.TimeZone;
-import java.util.concurrent.TimeUnit;
-
-import static java.util.concurrent.TimeUnit.HOURS;
 
 /**
  * Created by michael on 03/05/16.
@@ -46,6 +45,7 @@ public class Sensors implements Runnable {
 
 
     public ArrayList<ArrayList<String>> params = new ArrayList<ArrayList<String>>();
+    public ArrayList<Entry> entries = new ArrayList<Entry>();
 
     /** CONSTRUCTOR */
     public Sensors(Context context, final int samplingRate, final String userId) throws IOException {
@@ -89,20 +89,27 @@ public class Sensors implements Runnable {
             String to = "GMT offset is " + offsetFromUtc + " min";
             Log.i("<><>", to);
 
-            ArrayList<String> list = new ArrayList<>();
-            list.add(userId);
-            list.add(ts);
-            list.add(String.valueOf(lightValue));
-            list.add(String.valueOf(stepValue));
-            list.add(String.valueOf(getSoundVolume()));
-            list.add(String.valueOf(accelerometerValueX));
-            list.add(String.valueOf(accelerometerValueY));
-            list.add(String.valueOf(accelerometerValueZ));
-            list.add(String.valueOf(longitude));
-            list.add(String.valueOf(latitude));
 
-            params.add(list);
-            Log.i("SENSORING ...", String.valueOf(list));
+            Entry entry = new Entry(ts, String.valueOf(lightValue) , String.valueOf(stepValue), String.valueOf(getSoundVolume()), String.valueOf(accelerometerValueX), String.valueOf(accelerometerValueY), String.valueOf(accelerometerValueZ), String.valueOf(longitude), String.valueOf(latitude));
+
+//            ArrayList<String> list = new ArrayList<>();
+//            list.add(userId);
+//            list.add(ts);
+//            list.add(String.valueOf(lightValue));
+//            list.add(String.valueOf(stepValue));
+//            list.add(String.valueOf(getSoundVolume()));
+//            list.add(String.valueOf(accelerometerValueX));
+//            list.add(String.valueOf(accelerometerValueY));
+//            list.add(String.valueOf(accelerometerValueZ));
+//            list.add(String.valueOf(longitude));
+//            list.add(String.valueOf(latitude));
+
+            entries.add(entry);
+
+            MySQLiteHelper mySQLiteHelper = new MySQLiteHelper(servingContext);
+            Log.i("DB ENTRY", "-> " + mySQLiteHelper.insertEntry(entry));
+//            params.add(list);
+//            Log.i("SENSORING ...", String.valueOf(list));
 
             if(running) {
                 handler.postDelayed(this, SAMPLING_RATE);
