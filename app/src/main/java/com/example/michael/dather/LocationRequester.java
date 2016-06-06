@@ -27,7 +27,7 @@ public class LocationRequester implements LocationListener {
 
     public LocationRequester(Context context) {
         servingContext = context;
-        locationManager = (LocationManager) context.getSystemService(servingContext.LOCATION_SERVICE);
+        locationManager = (LocationManager) context.getSystemService(Context.LOCATION_SERVICE);
     }
 
     public double[] getLocation() {

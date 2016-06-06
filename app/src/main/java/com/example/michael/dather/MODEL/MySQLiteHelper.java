@@ -94,12 +94,22 @@ public class MySQLiteHelper extends SQLiteOpenHelper {
         return true;
     }
 
-
     public Cursor getEntry(int id) {
         SQLiteDatabase db = this.getReadableDatabase();
         Cursor res = db.rawQuery( "SELECT * FROM " + TABLE_NAME + " WHERE " +
                 COLUMN_ID + "=?", new String[] { Integer.toString(id) } );
         return res;
+    }
+
+    public String getUserID() {
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor res = db.rawQuery( "SELECT * FROM " + TABLE_NAME + " ASC LIMIT 1", null );
+
+        ArrayList<ArrayList<String>> userID = cursorToArrays(res);
+
+        Log.i("USER ID", userID.toString());
+
+        return toString();
     }
 
     public ArrayList<ArrayList<String>> getAllEntries() {
@@ -123,6 +133,12 @@ public class MySQLiteHelper extends SQLiteOpenHelper {
             }
         }
         return results;
+    }
+
+    public Boolean hasEntries() {
+        SQLiteDatabase db = this.getReadableDatabase();
+
+        return db.rawQuery( "SELECT * FROM " + TABLE_NAME, null ).getCount() != 0;
     }
 
     public void clearTable() {

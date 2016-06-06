@@ -65,10 +65,10 @@ public class APIService extends AppCompatActivity {
         });
     }
 
-    public void sendData(String parameters) {
+    public void sendData(String parameters, String url) {
         AsyncRequest asynchronousGet = new AsyncRequest();
         try {
-            Request request =  asynchronousGet.apiRequest("/dodo", parameters);
+            Request request =  asynchronousGet.apiRequest(url, parameters);
             ApiRequest(request);
         } catch (Exception e) {
             e.printStackTrace();

@@ -42,6 +42,7 @@ public class Sensors implements Runnable {
     private double latitude = 0f;
     private double longitude = 0f;
     private Handler handler = new Handler();
+    private MySQLiteHelper mySQLiteHelper;
 
 
     public ArrayList<ArrayList<String>> params = new ArrayList<ArrayList<String>>();
@@ -50,9 +51,11 @@ public class Sensors implements Runnable {
     /** CONSTRUCTOR */
     public Sensors(Context context, final int samplingRate, final String userId) throws IOException {
         this.servingContext = context;
-        this.sensorManager = (SensorManager) context.getSystemService(servingContext.SENSOR_SERVICE);
+        this.sensorManager = (SensorManager) context.getSystemService(Context.SENSOR_SERVICE);
         this.SAMPLING_RATE = samplingRate;
         this.userId = userId;
+
+        mySQLiteHelper = new MySQLiteHelper(servingContext);
 
         run();
     }
@@ -63,53 +66,13 @@ public class Sensors implements Runnable {
             Long tsLong = System.currentTimeMillis() / 1000;
             String ts = tsLong.toString();
 
-            Calendar mCalendar = new GregorianCalendar();
-            TimeZone mTimeZone = mCalendar.getTimeZone();
-            int mGMTOffset = mTimeZone.getRawOffset();
 
-
-            SimpleDateFormat dateFormatGmt = new SimpleDateFormat("yyyy-MMM-dd HH:mm:ss");
-            dateFormatGmt.setTimeZone(TimeZone.getTimeZone("UTC"));
-
-            //Local time zone
-            SimpleDateFormat dateFormatLocal = new SimpleDateFormat("yyyy-MMM-dd HH:mm:ss");
-
-            //Time in GMT
-            try {
-                String timeSTamp = "" + dateFormatLocal.parse( dateFormatGmt.format(new Date()) );
-                Log.i("TSAMP", timeSTamp);
-            } catch (ParseException e) {
-                e.printStackTrace();
-            }
-
-            TimeZone tz = TimeZone.getDefault();
-            Date now = new Date();
-            int offsetFromUtc = tz.getOffset(now.getTime()) / 1000 / 60;
-
-            String to = "GMT offset is " + offsetFromUtc + " min";
-            Log.i("<><>", to);
 
 
             Entry entry = new Entry(ts, String.valueOf(lightValue) , String.valueOf(stepValue), String.valueOf(getSoundVolume()), String.valueOf(accelerometerValueX), String.valueOf(accelerometerValueY), String.valueOf(accelerometerValueZ), String.valueOf(longitude), String.valueOf(latitude));
-
-//            ArrayList<String> list = new ArrayList<>();
-//            list.add(userId);
-//            list.add(ts);
-//            list.add(String.valueOf(lightValue));
-//            list.add(String.valueOf(stepValue));
-//            list.add(String.valueOf(getSoundVolume()));
-//            list.add(String.valueOf(accelerometerValueX));
-//            list.add(String.valueOf(accelerometerValueY));
-//            list.add(String.valueOf(accelerometerValueZ));
-//            list.add(String.valueOf(longitude));
-//            list.add(String.valueOf(latitude));
-
             entries.add(entry);
 
-            MySQLiteHelper mySQLiteHelper = new MySQLiteHelper(servingContext);
-            Log.i("DB ENTRY", "-> " + mySQLiteHelper.insertEntry(entry));
-//            params.add(list);
-//            Log.i("SENSORING ...", String.valueOf(list));
+            mySQLiteHelper.insertEntry(entry);
 
             if(running) {
                 handler.postDelayed(this, SAMPLING_RATE);

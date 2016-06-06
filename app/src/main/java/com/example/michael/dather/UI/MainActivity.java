@@ -21,6 +21,7 @@ import com.example.michael.dather.API.APIService;
 import com.example.michael.dather.API.ApiCallback;
 import com.example.michael.dather.MODEL.Entry;
 import com.example.michael.dather.MODEL.MySQLiteHelper;
+import com.example.michael.dather.MODEL.User;
 import com.example.michael.dather.R;
 import com.example.michael.dather.Sensors;
 
@@ -40,6 +41,8 @@ import java.math.BigInteger;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
+import java.util.Date;
+import java.util.TimeZone;
 
 public class MainActivity extends AppCompatActivity {
     FloatingActionButton gatherBtn;
@@ -51,17 +54,19 @@ public class MainActivity extends AppCompatActivity {
     boolean sensoring = false;
     public Sensors sensor;
     private EditText emailInput;
+    MySQLiteHelper mySQLiteHelper;
+    User user;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        MySQLiteHelper mySQLiteHelper = new MySQLiteHelper(this);
+        mySQLiteHelper = new MySQLiteHelper(this);
         //mySQLiteHelper.clearTable();
 
 
-        ArrayList<ArrayList<String>> al = mySQLiteHelper.getAllEntries();
-        Log.i("asd", al.toString());
+//        ArrayList<ArrayList<String>> al = mySQLiteHelper.getAllEntries();
+//        Log.i("asd", al.toString());
 
         SharedPreferences mPrefs = getSharedPreferences("prefs", 0);
         if(!mPrefs.getBoolean("acceptedTerms", false)) {
@@ -91,9 +96,9 @@ public class MainActivity extends AppCompatActivity {
             emailInput.setText(getUserMail());
         }
 
-
-        if (read != "") {
-            dataString = read;
+        if(mySQLiteHelper.hasEntries()) {
+           // dataString = read;
+            readDataEntries();
             gatherBtn.setVisibility(View.INVISIBLE);
             stopBtn.setVisibility(View.INVISIBLE);
             sendBtn.setVisibility(View.VISIBLE);
@@ -133,17 +138,43 @@ public class MainActivity extends AppCompatActivity {
                     stopBtn.setVisibility(View.INVISIBLE);
                     sendBtn.setVisibility(View.VISIBLE);
 
-                    try {
-                        dataString = datasetToJSONStr(sensor.params);
-                        writeToFile(dataString);
-                    } catch (JSONException e) {
-                        e.printStackTrace();
-                    }
+
+                    readDataEntries();
+
+//                    try {
+//                        ArrayList<ArrayList<String>> entries = mySQLiteHelper.getAllEntries();
+//
+////                        for(ArrayList<String> entryList : entries) {
+////                            Log.i("---------", "");
+////                            for(String entry : entryList) {
+////                                Log.i("-", entry);
+////                            }
+////                        }
+//
+//                        dataString = datasetToJSONStr(entries);
+//
+//                        Log.i("DATASTRING", dataString);
+//
+////                        dataString = datasetToJSONStr(sensor.params);
+////                        writeToFile(dataString);
+//                   } catch (JSONException e) {
+//                        e.printStackTrace();
+//                    }
 
                     sensor.running = false;
                 }
             }
         });
+    }
+
+    private void readDataEntries() {
+        try {
+            ArrayList<ArrayList<String>> entries = mySQLiteHelper.getAllEntries();
+
+            dataString = datasetToJSONStr(entries);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
     }
 
     private void setupSendBtn() {
@@ -181,6 +212,7 @@ public class MainActivity extends AppCompatActivity {
     private void startGathering() {
         final String userId = genUserID();
         saveStringId(genUserID(), "userID");
+        saveStringId(getGMTOffset(), "gmtOffset");
 
         if(userId == null) {
             showSnackbar("#31C154", "Please, add your email address first", Snackbar.LENGTH_SHORT);
@@ -253,7 +285,7 @@ public class MainActivity extends AppCompatActivity {
                 }
             });
 
-            apiService.sendData(dataString);
+            apiService.sendData(dataString, "dodo");
             showSnackbar("#31C154", "Sending . . .", Snackbar.LENGTH_SHORT);
         }
         else {
@@ -299,6 +331,14 @@ public class MainActivity extends AppCompatActivity {
         return null;
     }
 
+    private String getGMTOffset() {
+        TimeZone tz = TimeZone.getDefault();
+        Date now = new Date();
+        int offsetFromUtc = tz.getOffset(now.getTime()) / 1000 / 60;
+
+        return String.valueOf(offsetFromUtc);
+    }
+
     private void saveStringId(String inptStr, String key){
         SharedPreferences preferences = getApplicationContext().getSharedPreferences("user", Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = preferences.edit();
@@ -306,15 +346,11 @@ public class MainActivity extends AppCompatActivity {
         editor.commit();
     }
 
-    private String getUserId(){
-        SharedPreferences preferences = getApplicationContext().getSharedPreferences("user", Context.MODE_PRIVATE);
-        return preferences.getString("userID", null);
-    }
-
     private String getUserMail(){
         SharedPreferences preferences = getApplicationContext().getSharedPreferences("user", Context.MODE_PRIVATE);
         return preferences.getString("email", null);
     }
+
 
     private String readFromFile() {
         String ret = "";

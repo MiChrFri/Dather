@@ -16,6 +16,8 @@ import android.widget.CheckBox;
 
 import com.example.michael.dather.API.APIService;
 import com.example.michael.dather.API.ApiCallback;
+import com.example.michael.dather.MODEL.MySQLiteHelper;
+import com.example.michael.dather.MODEL.User;
 import com.example.michael.dather.R;
 
 import org.json.JSONException;
@@ -23,6 +25,7 @@ import org.json.JSONException;
 public class AskActivity extends AppCompatActivity {
 
     CheckBox q[] = new CheckBox[6];
+    User user;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -39,6 +42,13 @@ public class AskActivity extends AppCompatActivity {
                         .setAction("Action", null).show();
 
                 Log.i("CHECKBOXES", checkboxesToString());
+
+                try {
+                    sendToServer(checkboxesToString());
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+
             }
         });
 
@@ -48,15 +58,33 @@ public class AskActivity extends AppCompatActivity {
         q[3] = (CheckBox) findViewById(R.id.checkBox4);
         q[4] = (CheckBox) findViewById(R.id.checkBox5);
         q[5] = (CheckBox) findViewById(R.id.checkBox6);
+
+        MySQLiteHelper mySQLiteHelper = new MySQLiteHelper(this);
+        mySQLiteHelper.getUserID();
     }
 
     private String checkboxesToString() {
-        String resultString = "";
+        String resultString = "[{";
+
+        resultString += "\"user_id\":\""+ getUserId() +"\",";
+        resultString += "\"gmt_offset\":\""+ getGmtOffset() +"\",";
+
+        int counter = 1;
 
         for(CheckBox question : q) {
 
-            resultString += question.isChecked() ? "YES | " : "NO | ";
+            resultString += "\"q" + counter + "\":\"";
+            resultString += question.isChecked() ? "true" : "false";
+            resultString += "\",";
+
+            counter+=1;
         }
+
+        if (resultString != null && resultString.length() > 0 && resultString.charAt(resultString.length()-1)==',') {
+            resultString = resultString.substring(0, resultString.length()-1);
+        }
+
+        resultString += "}]";
 
         return resultString;
     }
@@ -81,7 +109,7 @@ public class AskActivity extends AppCompatActivity {
                 }
             });
 
-            apiService.sendData(form);
+            apiService.sendData(form, "user");
             showSnackbar("#31C154", "Sending . . .", Snackbar.LENGTH_SHORT);
         }
         else {
@@ -104,8 +132,14 @@ public class AskActivity extends AppCompatActivity {
     }
 
     private String getUserId(){
-        SharedPreferences preferences = getApplicationContext().getSharedPreferences("userID", Context.MODE_PRIVATE);
+        SharedPreferences preferences = getApplicationContext().getSharedPreferences("user", Context.MODE_PRIVATE);
         return preferences.getString("userID", null);
     }
+
+    private String getGmtOffset(){
+        SharedPreferences preferences = getApplicationContext().getSharedPreferences("user", Context.MODE_PRIVATE);
+        return preferences.getString("gmtOffset", null);
+    }
+
 
 }
