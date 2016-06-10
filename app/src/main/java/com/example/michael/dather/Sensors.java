@@ -7,19 +7,13 @@ import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
 import android.os.Handler;
 import android.util.Log;
-
 import com.example.michael.dather.MODEL.Entry;
 import com.example.michael.dather.MODEL.MySQLiteHelper;
+import com.example.michael.dather.SECURITY.Encrypt;
 
 import java.io.IOException;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.GregorianCalendar;
 import java.util.List;
-import java.util.TimeZone;
 
 /**
  * Created by michael on 03/05/16.
@@ -44,8 +38,6 @@ public class Sensors implements Runnable {
     private Handler handler = new Handler();
     private MySQLiteHelper mySQLiteHelper;
 
-
-    public ArrayList<ArrayList<String>> params = new ArrayList<ArrayList<String>>();
     public ArrayList<Entry> entries = new ArrayList<Entry>();
 
     /** CONSTRUCTOR */
@@ -67,9 +59,14 @@ public class Sensors implements Runnable {
             String ts = tsLong.toString();
 
 
+            String[] entrieVals = {ts, String.valueOf(lightValue) , String.valueOf(stepValue), String.valueOf(getSoundVolume()), String.valueOf(accelerometerValueX), String.valueOf(accelerometerValueY), String.valueOf(accelerometerValueZ), String.valueOf(longitude), String.valueOf(latitude)};
+
+            Entry entry = new Entry(entrieVals);
+
+            Encrypt encrypt = new Encrypt();
+            encrypt.entry(entrieVals);
 
 
-            Entry entry = new Entry(ts, String.valueOf(lightValue) , String.valueOf(stepValue), String.valueOf(getSoundVolume()), String.valueOf(accelerometerValueX), String.valueOf(accelerometerValueY), String.valueOf(accelerometerValueZ), String.valueOf(longitude), String.valueOf(latitude));
             entries.add(entry);
 
             mySQLiteHelper.insertEntry(entry);
@@ -169,7 +166,6 @@ public class Sensors implements Runnable {
 
     @Override
     public void run() {
-
         android.os.Process.setThreadPriority(android.os.Process.THREAD_PRIORITY_BACKGROUND);
 
         logSensorSteps();

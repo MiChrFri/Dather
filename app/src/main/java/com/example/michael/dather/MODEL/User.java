@@ -33,6 +33,4 @@ public class User {
         this.q5 = q5;
         this.q6 = q6;
     }
-
-    //public User(String userId, String gmtOffset, ) {
 }

@@ -44,9 +44,8 @@
                         android:id="@+id/accept"
                         style="?metaButtonBarButtonStyle"
                         android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:text="Accept Terms"
+                        android:layout_height="70dp"
+                        android:text="I understand the information and agree to the procedure"
                         android:background="#b3b3b3" />
 
                 </TableLayout>

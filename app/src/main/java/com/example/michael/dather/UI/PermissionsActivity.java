@@ -107,9 +107,6 @@ public class PermissionsActivity extends AppCompatActivity {
         }
     }
 
-
-
-
     @Override
     public void onRequestPermissionsResult(int requestCode, String permissions[], int[] grantResults) {
         if(recordingPermission.isChecked() && locationPermission.isChecked() && internetPermission.isChecked()) {

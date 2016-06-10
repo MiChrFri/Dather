@@ -55,7 +55,6 @@ public class MainActivity extends AppCompatActivity {
     public Sensors sensor;
     private EditText emailInput;
     MySQLiteHelper mySQLiteHelper;
-    User user;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -64,9 +63,6 @@ public class MainActivity extends AppCompatActivity {
         mySQLiteHelper = new MySQLiteHelper(this);
         //mySQLiteHelper.clearTable();
 
-
-//        ArrayList<ArrayList<String>> al = mySQLiteHelper.getAllEntries();
-//        Log.i("asd", al.toString());
 
         SharedPreferences mPrefs = getSharedPreferences("prefs", 0);
         if(!mPrefs.getBoolean("acceptedTerms", false)) {
@@ -83,13 +79,10 @@ public class MainActivity extends AppCompatActivity {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        String read = readFromFile();
-
         setupStartBtn();
         setupStopBtn();
         setupSendBtn();
         setupRestartBtn();
-
 
         emailInput = (EditText) findViewById(R.id.editText);
         if(getUserMail() != null) {
@@ -97,7 +90,6 @@ public class MainActivity extends AppCompatActivity {
         }
 
         if(mySQLiteHelper.hasEntries()) {
-           // dataString = read;
             readDataEntries();
             gatherBtn.setVisibility(View.INVISIBLE);
             stopBtn.setVisibility(View.INVISIBLE);
@@ -138,28 +130,7 @@ public class MainActivity extends AppCompatActivity {
                     stopBtn.setVisibility(View.INVISIBLE);
                     sendBtn.setVisibility(View.VISIBLE);
 
-
                     readDataEntries();
-
-//                    try {
-//                        ArrayList<ArrayList<String>> entries = mySQLiteHelper.getAllEntries();
-//
-////                        for(ArrayList<String> entryList : entries) {
-////                            Log.i("---------", "");
-////                            for(String entry : entryList) {
-////                                Log.i("-", entry);
-////                            }
-////                        }
-//
-//                        dataString = datasetToJSONStr(entries);
-//
-//                        Log.i("DATASTRING", dataString);
-//
-////                        dataString = datasetToJSONStr(sensor.params);
-////                        writeToFile(dataString);
-//                   } catch (JSONException e) {
-//                        e.printStackTrace();
-//                    }
 
                     sensor.running = false;
                 }
@@ -205,6 +176,8 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 startGathering();
+                stopBtn.setVisibility(View.VISIBLE);
+                sendBtn.setVisibility(View.INVISIBLE);
             }
         });
     }
@@ -349,48 +322,5 @@ public class MainActivity extends AppCompatActivity {
     private String getUserMail(){
         SharedPreferences preferences = getApplicationContext().getSharedPreferences("user", Context.MODE_PRIVATE);
         return preferences.getString("email", null);
-    }
-
-
-    private String readFromFile() {
-        String ret = "";
-
-        try {
-            InputStream inputStream = openFileInput("dataset.txt");
-
-            if ( inputStream != null ) {
-                InputStreamReader inputStreamReader = new InputStreamReader(inputStream);
-                BufferedReader bufferedReader = new BufferedReader(inputStreamReader);
-                String receiveString = "";
-                StringBuilder stringBuilder = new StringBuilder();
-
-                while ( (receiveString = bufferedReader.readLine()) != null ) {
-                    stringBuilder.append(receiveString);
-                }
-
-                inputStream.close();
-                ret = stringBuilder.toString();
-            }
-        }
-        catch (FileNotFoundException e) {
-            //Log.e("LALA", "File not found: " + e.toString());
-        } catch (IOException e) {
-            Log.e("ASDAS", "Can not read file: " + e.toString());
-        }
-
-        return ret;
-    }
-
-    private void writeToFile(String data) {
-        try {
-            String fileName = "dataset.txt";
-
-            OutputStreamWriter outputStreamWriter = new OutputStreamWriter(openFileOutput(fileName, Context.MODE_PRIVATE));
-            outputStreamWriter.write(data);
-            outputStreamWriter.close();
-        }
-        catch (IOException e) {
-            Log.e("FAILED", "File write failed: " + e.toString());
-        }
     }
 }

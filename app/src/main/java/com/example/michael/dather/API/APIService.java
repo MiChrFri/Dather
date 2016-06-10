@@ -4,16 +4,11 @@ package com.example.michael.dather.API;
  * Created by michael on 09/05/16.
  */
 
-import android.net.ConnectivityManager;
-import android.net.NetworkInfo;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
-import org.json.JSONObject;
 import java.io.IOException;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-
-import javax.security.auth.callback.Callback;
 import okhttp3.Call;
 import okhttp3.Headers;
 import okhttp3.OkHttpClient;

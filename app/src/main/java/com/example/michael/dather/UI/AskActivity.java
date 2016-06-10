@@ -1,6 +1,7 @@
 package com.example.michael.dather.UI;
 
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.net.ConnectivityManager;
@@ -23,9 +24,7 @@ import com.example.michael.dather.R;
 import org.json.JSONException;
 
 public class AskActivity extends AppCompatActivity {
-
     CheckBox q[] = new CheckBox[6];
-    User user;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -41,14 +40,11 @@ public class AskActivity extends AppCompatActivity {
                 Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
                         .setAction("Action", null).show();
 
-                Log.i("CHECKBOXES", checkboxesToString());
-
                 try {
                     sendToServer(checkboxesToString());
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
-
             }
         });
 
@@ -58,9 +54,6 @@ public class AskActivity extends AppCompatActivity {
         q[3] = (CheckBox) findViewById(R.id.checkBox4);
         q[4] = (CheckBox) findViewById(R.id.checkBox5);
         q[5] = (CheckBox) findViewById(R.id.checkBox6);
-
-        MySQLiteHelper mySQLiteHelper = new MySQLiteHelper(this);
-        mySQLiteHelper.getUserID();
     }
 
     private String checkboxesToString() {
@@ -72,7 +65,6 @@ public class AskActivity extends AppCompatActivity {
         int counter = 1;
 
         for(CheckBox question : q) {
-
             resultString += "\"q" + counter + "\":\"";
             resultString += question.isChecked() ? "true" : "false";
             resultString += "\",";
@@ -95,7 +87,7 @@ public class AskActivity extends AppCompatActivity {
                 @Override
                 public void receivedResponse(Boolean success) {
                     if(success) {
-
+                        getToMain();
                     }
                     else {
                         String message = "failed to send";
@@ -115,6 +107,11 @@ public class AskActivity extends AppCompatActivity {
         else {
             showSnackbar("#F71114", "No internet connection", Snackbar.LENGTH_SHORT);
         }
+    }
+
+    private void getToMain() {
+        Intent myIntent = new Intent(this, MainActivity.class);
+        startActivity(myIntent);
     }
 
     private void showSnackbar(String colorCode, String message, int length) {
@@ -140,6 +137,4 @@ public class AskActivity extends AppCompatActivity {
         SharedPreferences preferences = getApplicationContext().getSharedPreferences("user", Context.MODE_PRIVATE);
         return preferences.getString("gmtOffset", null);
     }
-
-
 }

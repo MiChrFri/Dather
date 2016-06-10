@@ -24,7 +24,6 @@ public class MySQLiteHelper extends SQLiteOpenHelper {
     public static final String COLUMN_TIMESTAMP = "timestamp";
     public static final String COLUMN_LIGHT     = "light";
     public static final String COLUMN_STEPS     = "steps";
-
     public static final String COLUMN_VOLUME    = "volume";
     public static final String COLUMN_ACCX      = "accX";
     public static final String COLUMN_ACCY      = "accY";
@@ -99,17 +98,6 @@ public class MySQLiteHelper extends SQLiteOpenHelper {
         Cursor res = db.rawQuery( "SELECT * FROM " + TABLE_NAME + " WHERE " +
                 COLUMN_ID + "=?", new String[] { Integer.toString(id) } );
         return res;
-    }
-
-    public String getUserID() {
-        SQLiteDatabase db = this.getReadableDatabase();
-        Cursor res = db.rawQuery( "SELECT * FROM " + TABLE_NAME + " ASC LIMIT 1", null );
-
-        ArrayList<ArrayList<String>> userID = cursorToArrays(res);
-
-        Log.i("USER ID", userID.toString());
-
-        return toString();
     }
 
     public ArrayList<ArrayList<String>> getAllEntries() {
