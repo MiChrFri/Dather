@@ -23,6 +23,7 @@ import com.example.michael.dather.MODEL.Entry;
 import com.example.michael.dather.MODEL.MySQLiteHelper;
 import com.example.michael.dather.MODEL.User;
 import com.example.michael.dather.R;
+import com.example.michael.dather.SECURITY.Encrypt;
 import com.example.michael.dather.Sensors;
 
 import org.json.JSONArray;
@@ -59,6 +60,15 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+
+        String[] entrieVals = {"42", "42","42","42","42","42","42","42","42","42"};
+
+        Encrypt encrypt = new Encrypt();
+
+
+
+
 
         mySQLiteHelper = new MySQLiteHelper(this);
         //mySQLiteHelper.clearTable();

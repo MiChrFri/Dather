@@ -63,8 +63,8 @@ public class Sensors implements Runnable {
 
             Entry entry = new Entry(entrieVals);
 
-            Encrypt encrypt = new Encrypt();
-            encrypt.entry(entrieVals);
+//            Encrypt encrypt = new Encrypt();
+//            encrypt.entry(entrieVals);
 
 
             entries.add(entry);
