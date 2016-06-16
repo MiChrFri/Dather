@@ -37,6 +37,7 @@ public class Sensors implements Runnable {
     private double longitude = 0f;
     private Handler handler = new Handler();
     private MySQLiteHelper mySQLiteHelper;
+    private Encrypt encryptor;
 
     public ArrayList<Entry> entries = new ArrayList<Entry>();
 
@@ -48,6 +49,7 @@ public class Sensors implements Runnable {
         this.userId = userId;
 
         mySQLiteHelper = new MySQLiteHelper(servingContext);
+        this.encryptor = new Encrypt();
 
         run();
     }
@@ -60,15 +62,9 @@ public class Sensors implements Runnable {
 
 
             String[] entrieVals = {ts, String.valueOf(lightValue) , String.valueOf(stepValue), String.valueOf(getSoundVolume()), String.valueOf(accelerometerValueX), String.valueOf(accelerometerValueY), String.valueOf(accelerometerValueZ), String.valueOf(longitude), String.valueOf(latitude)};
-
-            Entry entry = new Entry(entrieVals);
-
-//            Encrypt encrypt = new Encrypt();
-//            encrypt.entry(entrieVals);
-
+            Entry entry = new Entry(entrieVals, encryptor);
 
             entries.add(entry);
-
             mySQLiteHelper.insertEntry(entry);
 
             if(running) {

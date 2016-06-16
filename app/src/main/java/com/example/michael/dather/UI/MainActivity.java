@@ -61,18 +61,8 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-
-        String[] entrieVals = {"42", "42","42","42","42","42","42","42","42","42"};
-
-        Encrypt encrypt = new Encrypt();
-
-
-
-
-
         mySQLiteHelper = new MySQLiteHelper(this);
         //mySQLiteHelper.clearTable();
-
 
         SharedPreferences mPrefs = getSharedPreferences("prefs", 0);
         if(!mPrefs.getBoolean("acceptedTerms", false)) {
@@ -232,7 +222,7 @@ public class MainActivity extends AppCompatActivity {
 
         for(ArrayList<String> list : dataSet) {
             JSONObject obj = new JSONObject();
-            obj.put("user_id", list.get(0));
+            obj.put("user_id", getUserID());
             obj.put("timestamp", list.get(1));
             obj.put("light", list.get(2));
             obj.put("steps", list.get(3));
@@ -242,6 +232,7 @@ public class MainActivity extends AppCompatActivity {
             obj.put("accZ", list.get(7));
             obj.put("latitude", list.get(8));
             obj.put("longitude", list.get(9));
+            obj.put("secret", list.get(10));
 
             jsAr.put(obj);
         }
@@ -304,6 +295,7 @@ public class MainActivity extends AppCompatActivity {
 
                 byte[] hash = md.digest();
                 BigInteger bigInt = new BigInteger(1, hash);
+
                 return bigInt.toString(16);
             } catch (NoSuchAlgorithmException e) {
                 e.printStackTrace();
@@ -327,6 +319,11 @@ public class MainActivity extends AppCompatActivity {
         SharedPreferences.Editor editor = preferences.edit();
         editor.putString(key, inptStr);
         editor.commit();
+    }
+
+    private String getUserID(){
+        SharedPreferences preferences = getApplicationContext().getSharedPreferences("user", Context.MODE_PRIVATE);
+        return preferences.getString("userID", null);
     }
 
     private String getUserMail(){

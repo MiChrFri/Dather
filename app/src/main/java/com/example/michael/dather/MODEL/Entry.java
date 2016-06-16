@@ -3,6 +3,8 @@ package com.example.michael.dather.MODEL;
 import android.content.ContentValues;
 import android.database.sqlite.SQLiteDatabase;
 
+import com.example.michael.dather.SECURITY.Encrypt;
+
 /**
  * Created by michael on 03/06/16.
  */
@@ -17,18 +19,21 @@ public class Entry {
     String accZ;
     String lati;
     String longi;
+    String secret;
 
-    public Entry(String[] entryVals) {
+    public Entry(String[] entryVals, Encrypt encrypt) {
         if(entryVals.length == 9) {
+
             this.ts     = entryVals[0];
-            this.light  = entryVals[1];
-            this.steps  = entryVals[2];
-            this.volume = entryVals[3];
-            this.accX   = entryVals[4];
-            this.accY   = entryVals[5];
-            this.accZ   = entryVals[6];
-            this.lati   = entryVals[7];
-            this.longi  = entryVals[8];
+            this.light  = encrypt.encryptString(entryVals[1]);
+            this.steps  = encrypt.encryptString(entryVals[2]);
+            this.volume = encrypt.encryptString(entryVals[3]);
+            this.accX   = encrypt.encryptString(entryVals[4]);
+            this.accY   = encrypt.encryptString(entryVals[5]);
+            this.accZ   = encrypt.encryptString(entryVals[6]);
+            this.lati   = encrypt.encryptString(entryVals[7]);
+            this.longi  = encrypt.encryptString(entryVals[8]);
+            this.secret = encrypt.getEncryptedSecret();
         }
         else {
             this.ts     = "ENTRY ERROR";
@@ -40,6 +45,7 @@ public class Entry {
             this.accZ   = "ENTRY ERROR";
             this.lati   = "ENTRY ERROR";
             this.longi  = "ENTRY ERROR";
+            this.secret = "ENTRY ERROR";
         }
     }
 }

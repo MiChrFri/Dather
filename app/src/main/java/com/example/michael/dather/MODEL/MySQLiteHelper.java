@@ -30,6 +30,7 @@ public class MySQLiteHelper extends SQLiteOpenHelper {
     public static final String COLUMN_ACCZ      = "accZ";
     public static final String COLUMN_LATITUDE  = "latitude";
     public static final String COLUMN_LONGITUDE = "longitude";
+    public static final String COLUMN_SECRET    = "secret";
 
 
     public MySQLiteHelper(Context context) {
@@ -48,7 +49,8 @@ public class MySQLiteHelper extends SQLiteOpenHelper {
                 COLUMN_ACCY + " TEXT, " +
                 COLUMN_ACCZ + " TEXT, " +
                 COLUMN_LATITUDE + " TEXT, " +
-                COLUMN_LONGITUDE + " TEXT)"
+                COLUMN_LONGITUDE + " TEXT, " +
+                COLUMN_SECRET + " TEXT)"
         );
     }
 
@@ -71,6 +73,7 @@ public class MySQLiteHelper extends SQLiteOpenHelper {
         contentValues.put(COLUMN_ACCZ,      entry.accZ);
         contentValues.put(COLUMN_LATITUDE,  entry.lati);
         contentValues.put(COLUMN_LONGITUDE, entry.longi);
+        contentValues.put(COLUMN_SECRET,    entry.secret);
 
         db.insert(TABLE_NAME, null, contentValues);
         return true;
@@ -89,6 +92,7 @@ public class MySQLiteHelper extends SQLiteOpenHelper {
         contentValues.put(COLUMN_ACCZ,      entry.accZ);
         contentValues.put(COLUMN_LATITUDE,  entry.lati);
         contentValues.put(COLUMN_LONGITUDE, entry.longi);
+        contentValues.put(COLUMN_SECRET, entry.longi);
         db.update(TABLE_NAME, contentValues, COLUMN_ID + " = ? ", new String[] { Integer.toString(id) } );
         return true;
     }
