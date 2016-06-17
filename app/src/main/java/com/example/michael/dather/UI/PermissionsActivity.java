@@ -41,6 +41,10 @@ public class PermissionsActivity extends AppCompatActivity {
 
         networkStatePermission = (CheckBox) findViewById(R.id.checkBox4);
         permissionNetState();
+
+        if(recordingPermission.isChecked() && locationPermission.isChecked() && internetPermission.isChecked() && networkStatePermission.isChecked()) {
+            getToMain();
+        }
     }
 
     private void permissionRecordAudio() {
@@ -152,6 +156,16 @@ public class PermissionsActivity extends AppCompatActivity {
                 }
                 else {
                     internetPermission.setChecked(false);
+                }
+                return;
+            }
+            case PERMISSION_NETWORK_STATE: {
+                if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    networkStatePermission.setChecked(true);
+                    networkStatePermission.setClickable(false);
+                }
+                else {
+                    networkStatePermission.setChecked(false);
                 }
                 return;
             }

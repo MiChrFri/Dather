@@ -30,10 +30,6 @@ public class Encrypt {
 
         System.out.print("ENCRYPTION KEY: ");
         System.out.println(encryptedSecrectKey);
-
-        String plainText = "let's get shit shiity fuck done";
-
-
     }
 
     public String getEncryptedSecret() {
