@@ -54,13 +54,6 @@ public class Encrypt {
         return cipher.doFinal(plainText.getBytes("UTF-8"));
     }
 
-//    public static String decrypt(byte[] cipherText, String encryptionKey) throws Exception{
-//        Cipher cipher = Cipher.getInstance("AES/CBC/PKCS5Padding");
-//        SecretKeySpec key = new SecretKeySpec(encryptionKey.getBytes("UTF-8"), "AES");
-//        cipher.init(Cipher.DECRYPT_MODE, key,new IvParameterSpec(IV.getBytes("UTF-8")));
-//        return new String(cipher.doFinal(cipherText),"UTF-8");
-//    }
-
     private String genSecretKeyString() {
         String secretKeyString = null;
 
@@ -79,7 +72,6 @@ public class Encrypt {
 
         return secretKeyString;
     }
-
 
     private String rsaEncrypt(String str) {
         PublicKey publicKey = null;
@@ -103,8 +95,6 @@ public class Encrypt {
 
             encrypted = encryptedStringBase64;
 
-          //  byte[] encryptedBytes = cipher.doFinal(str.getBytes());
-
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -124,51 +114,5 @@ public class Encrypt {
         }
         return null;
     }
-
-//    private PrivateKey privateKeyFromBytes(byte[] privateBytes) {
-//        PKCS8EncodedKeySpec keySpec = new PKCS8EncodedKeySpec(privateBytes);
-//        try {
-//            KeyFactory keyFactory = KeyFactory.getInstance("RSA");
-//            return keyFactory.generatePrivate(keySpec);
-//        } catch (NoSuchAlgorithmException e) {
-//            e.printStackTrace();
-//        } catch (InvalidKeySpecException e) {
-//            e.printStackTrace();
-//        }
-//        return null;
-//    }
-//
-//    private void printKeys(PublicKey publicKey, PrivateKey privateKey) {
-//        byte[] pubEnc = publicKey.getEncoded();
-//        String s = Base64.encodeToString(pubEnc, Base64.DEFAULT);
-//
-//        byte[] privEnc = privateKey.getEncoded();
-//        String b = Base64.encodeToString(privEnc, Base64.DEFAULT);
-//
-//        System.out.print(s);
-//        System.out.println("----------");
-//        System.out.print(b);
-//    }
-//
-//    private String[] generateKeyStrings() throws NoSuchAlgorithmException {
-//        String[] keyPair = new String[2];
-//
-//        KeyPairGenerator kpg = KeyPairGenerator.getInstance("RSA");
-//        kpg.initialize(1024);
-//        KeyPair kp = kpg.genKeyPair();
-//
-//        PublicKey publicKey = kp.getPublic();
-//        PrivateKey privateKey = kp.getPrivate();
-//
-//        byte[] publicBytes = publicKey.getEncoded();
-//        String publicString = Base64.encodeToString(publicBytes, Base64.DEFAULT);
-//        keyPair[0] = publicString;
-//
-//        byte[] privateBytes = privateKey.getEncoded();
-//        String privateString = Base64.encodeToString(privateBytes, Base64.DEFAULT);
-//        keyPair[1] = privateString;
-//
-//        return keyPair;
-//    }
 
 }

@@ -6,37 +6,24 @@ import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
+import android.os.Build;
 import android.os.Bundle;
-import android.os.Environment;
 import android.os.Handler;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
-
 import com.example.michael.dather.API.APIService;
 import com.example.michael.dather.API.ApiCallback;
-import com.example.michael.dather.MODEL.Entry;
 import com.example.michael.dather.MODEL.MySQLiteHelper;
-import com.example.michael.dather.MODEL.User;
 import com.example.michael.dather.R;
-import com.example.michael.dather.SECURITY.Encrypt;
 import com.example.michael.dather.Sensors;
-
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.OutputStreamWriter;
 import java.io.UnsupportedEncodingException;
 import java.math.BigInteger;
 import java.security.MessageDigest;
@@ -65,15 +52,19 @@ public class MainActivity extends AppCompatActivity {
         //mySQLiteHelper.clearTable();
 
         SharedPreferences mPrefs = getSharedPreferences("prefs", 0);
+
         if(!mPrefs.getBoolean("acceptedTerms", false)) {
-            Intent myIntent = new Intent(this, TermsOfUseActivity.class);
+            Intent myIntent = new Intent(getApplicationContext(), TermsOfUseActivity.class);
             startActivity(myIntent);
         }
 
-        if(!mPrefs.getBoolean("permitted", false)) {
-            Intent myIntent2 = new Intent(this, PermissionsActivity.class);
-            startActivity(myIntent2);
+        if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            if(!mPrefs.getBoolean("permitted", false)) {
+                Intent myIntent2 = new Intent(getApplicationContext(), PermissionsActivity.class);
+                startActivity(myIntent2);
+            }
         }
+
 
         setContentView(R.layout.activity_main);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
