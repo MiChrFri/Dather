@@ -24,7 +24,7 @@ import com.example.michael.dather.R;
 import org.json.JSONException;
 
 public class AskActivity extends AppCompatActivity {
-    CheckBox q[] = new CheckBox[6];
+    CheckBox q[] = new CheckBox[9];
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -54,6 +54,9 @@ public class AskActivity extends AppCompatActivity {
         q[3] = (CheckBox) findViewById(R.id.checkBox4);
         q[4] = (CheckBox) findViewById(R.id.checkBox5);
         q[5] = (CheckBox) findViewById(R.id.checkBox6);
+        q[6] = (CheckBox) findViewById(R.id.checkBox7);
+        q[7] = (CheckBox) findViewById(R.id.checkBox8);
+        q[8] = (CheckBox) findViewById(R.id.checkBox9);
     }
 
     private String checkboxesToString() {

@@ -15,7 +15,7 @@
     <CheckBox
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Did you work in a team?"
+        android:text="Are you a Student?"
         android:id="@+id/checkBox1"
         android:checked="false"
         android:textColor="@color/colorLightBlue"
@@ -28,7 +28,7 @@
     <CheckBox
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Are you a Student?"
+        android:text="Did you work in a team?"
         android:id="@+id/checkBox2"
         android:checked="false"
         android:textColor="@color/colorLightBlue"
@@ -41,7 +41,7 @@
     <CheckBox
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Did you watch tv or smth similar?"
+        android:text="Did you listen to music?"
         android:id="@+id/checkBox3"
         android:checked="false"
         android:textColor="@color/colorLightBlue"
@@ -54,7 +54,7 @@
     <CheckBox
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Did you listen to music?"
+        android:text="Did you feel tired?"
         android:id="@+id/checkBox4"
         android:checked="false"
         android:textColor="@color/colorLightBlue"
@@ -66,7 +66,7 @@
     <CheckBox
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Did you feel tired?"
+        android:text="Did you enjoy the tasks?"
         android:id="@+id/checkBox5"
         android:checked="false"
         android:textColor="@color/colorLightBlue"
@@ -79,7 +79,7 @@
     <CheckBox
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Have you been Hhungry or thursty?"
+        android:text="Did you give all you attention to the tasks?"
         android:id="@+id/checkBox6"
         android:checked="false"
         android:textColor="@color/colorLightBlue"
@@ -88,6 +88,45 @@
         android:layout_below="@+id/checkBox5"
         android:layout_alignParentLeft="true"
         android:layout_alignEnd="@+id/checkBox5" />
+
+    <CheckBox
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Were you distracted during the tasks?"
+        android:id="@+id/checkBox7"
+        android:checked="false"
+        android:textColor="@color/colorLightBlue"
+        android:theme="@style/MyCheckBox"
+        android:layout_alignParentStart="true"
+        android:layout_below="@+id/checkBox6"
+        android:layout_alignParentLeft="true"
+        android:layout_alignEnd="@+id/checkBox6" />
+
+    <CheckBox
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Did you feel stressed?"
+        android:id="@+id/checkBox8"
+        android:checked="false"
+        android:textColor="@color/colorLightBlue"
+        android:theme="@style/MyCheckBox"
+        android:layout_alignParentStart="true"
+        android:layout_below="@+id/checkBox7"
+        android:layout_alignParentLeft="true"
+        android:layout_alignEnd="@+id/checkBox7" />
+
+    <CheckBox
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Do you think the tasks were easy?"
+        android:id="@+id/checkBox9"
+        android:checked="false"
+        android:textColor="@color/colorLightBlue"
+        android:theme="@style/MyCheckBox"
+        android:layout_alignParentStart="true"
+        android:layout_below="@+id/checkBox8"
+        android:layout_alignParentLeft="true"
+        android:layout_alignEnd="@+id/checkBox8" />
 
     <TextView
         android:layout_width="wrap_content"
