@@ -79,15 +79,6 @@ public class Sensors implements Runnable {
     };
 
     /** SENSORS */
-    private List<Sensor> getSensorList() {
-        List<Sensor> sensorList = sensorManager.getSensorList(Sensor.TYPE_ALL);
-        for(Sensor sensor: sensorList){
-            Log.i("AVAILABLE SENSORS:", sensor.getName());
-        }
-
-        return sensorList;
-    }
-
     private double getSoundVolume() {
         soundmeter = new SoundMeter();
         soundmeter.start();
@@ -108,8 +99,6 @@ public class Sensors implements Runnable {
         Sensor steps = sensorManager.getDefaultSensor(Sensor.TYPE_STEP_COUNTER);
 
         if (steps != null) {
-            final float[] pressure = {0};
-
             SensorEventListener listener = new SensorEventListener() {
                 @Override
                 public void onSensorChanged(SensorEvent event) {
