@@ -15,6 +15,8 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.widget.EditText;
+import android.widget.TextView;
+
 import com.example.michael.dather.API.APIService;
 import com.example.michael.dather.API.ApiCallback;
 import com.example.michael.dather.MODEL.MySQLiteHelper;
@@ -41,7 +43,7 @@ public class MainActivity extends AppCompatActivity {
     String dataString;
     boolean sensoring = false;
     public Sensors sensor;
-    private EditText emailInput;
+    private TextView userName;
     MySQLiteHelper mySQLiteHelper;
 
     @Override
@@ -74,9 +76,9 @@ public class MainActivity extends AppCompatActivity {
         setupSendBtn();
         setupRestartBtn();
 
-        emailInput = (EditText) findViewById(R.id.editText);
-        if(getUserMail() != null) {
-            emailInput.setText(getUserMail());
+        userName = (TextView) findViewById(R.id.username);
+        if(getUserName() != null) {
+            userName.setText(getUserName());
         }
 
         if(mySQLiteHelper.hasEntries()) {
@@ -272,12 +274,10 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private String genUserID() {
-        String email = String.valueOf(emailInput.getText());
+        String email = String.valueOf(userName.getText());
 
         if (android.util.Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
             MessageDigest md;
-
-            saveStringId(email, "email");
 
             try {
                 md = MessageDigest.getInstance("SHA-256");
@@ -316,8 +316,8 @@ public class MainActivity extends AppCompatActivity {
         return preferences.getString("userID", null);
     }
 
-    private String getUserMail(){
+    private String getUserName(){
         SharedPreferences preferences = getApplicationContext().getSharedPreferences("user", Context.MODE_PRIVATE);
-        return preferences.getString("email", null);
+        return preferences.getString("username", null);
     }
 }

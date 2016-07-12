@@ -23,4 +23,15 @@ public final class AsyncRequest {
 
         return request;
     }
+
+    public Request urlGetRequest(String url) throws Exception {
+        String urlString = url;
+
+        Request request = new Request.Builder()
+                .url(urlString)
+                .get()
+                .build();
+
+        return request;
+    }
 }

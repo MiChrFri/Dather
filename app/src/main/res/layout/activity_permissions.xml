@@ -14,7 +14,7 @@
         android:padding="10pt"
         android:textColor="@color/colorLight"
         android:textSize="12sp"
-        android:text="HEY, I need you permissions to spy on you :D"
+        android:text="Please give the permissions for the gathering"
         android:textStyle="bold"
         android:layout_alignParentStart="true"
         android:layout_above="@+id/checkBox2" />
