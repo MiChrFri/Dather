@@ -29,7 +29,28 @@
         android:id="@+id/username"
         android:layout_centerVertical="true"
         android:layout_centerHorizontal="true"
+        android:gravity="center"
         android:hint="GitHub username"
         android:selectAllOnFocus="true" />
+
+    <ImageView
+        android:src="@drawable/logo"
+        android:layout_width="100dp"
+        android:layout_height="114dp"
+        android:id="@+id/imageView"
+        android:layout_marginBottom="55dp"
+        android:scaleType="fitXY"
+        android:cropToPadding="false"
+        android:layout_above="@+id/username"
+        android:layout_centerHorizontal="true" />
+
+    <ImageView
+        android:src="@drawable/ghub"
+        android:layout_width="40dp"
+        android:layout_height="39dp"
+        android:layout_marginTop="18dp"
+        android:id="@+id/imageView2"
+        android:layout_below="@+id/username"
+        android:layout_centerHorizontal="true" />
 
 </RelativeLayout>

@@ -13,6 +13,7 @@ import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.TextView;
@@ -77,6 +78,7 @@ public class MainActivity extends AppCompatActivity {
         setupRestartBtn();
 
         userName = (TextView) findViewById(R.id.username);
+
         if(getUserName() != null) {
             userName.setText(getUserName());
         }
@@ -276,23 +278,22 @@ public class MainActivity extends AppCompatActivity {
     private String genUserID() {
         String email = String.valueOf(userName.getText());
 
-        if (android.util.Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
-            MessageDigest md;
+        MessageDigest md;
 
-            try {
-                md = MessageDigest.getInstance("SHA-256");
-                md.update(email.getBytes("UTF-8"));
+        try {
+            md = MessageDigest.getInstance("SHA-256");
+            md.update(email.getBytes("UTF-8"));
 
-                byte[] hash = md.digest();
-                BigInteger bigInt = new BigInteger(1, hash);
+            byte[] hash = md.digest();
+            BigInteger bigInt = new BigInteger(1, hash);
 
-                return bigInt.toString(16);
-            } catch (NoSuchAlgorithmException e) {
-                e.printStackTrace();
-            } catch (UnsupportedEncodingException e) {
-                e.printStackTrace();
-            }
+            return bigInt.toString(16);
+        } catch (NoSuchAlgorithmException e) {
+            e.printStackTrace();
+        } catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
         }
+
         return null;
     }
 
