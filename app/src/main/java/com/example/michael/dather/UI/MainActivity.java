@@ -80,7 +80,7 @@ public class MainActivity extends AppCompatActivity {
         userName = (TextView) findViewById(R.id.username);
 
         if(getUserName() != null) {
-            userName.setText(getUserName());
+            userName.setText("Hi " + getUserName() + "!");
         }
 
         if(mySQLiteHelper.hasEntries()) {
