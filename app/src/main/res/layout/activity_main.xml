@@ -21,7 +21,8 @@
 
     </android.support.design.widget.AppBarLayout>
 
-    <include layout="@layout/content_main" />
+    <include layout="@layout/content_main"
+        android:id="@+id/include" />
 
     <android.support.design.widget.FloatingActionButton
         android:id="@+id/gather"
@@ -55,6 +56,17 @@
         android:layout_marginBottom="80dp"
         android:layout_marginLeft="20dp"
         android:src="@drawable/gather" />
+
+    <Button
+        android:text="logout"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/logoutBtn"
+        app:layout_anchor="@+id/include"
+        app:layout_anchorGravity="top|right"
+        android:layout_gravity="bottom|left"
+        android:textColor="@color/colorAccent"
+        android:background="#00ffffff" />
 
 
 </android.support.design.widget.CoordinatorLayout>

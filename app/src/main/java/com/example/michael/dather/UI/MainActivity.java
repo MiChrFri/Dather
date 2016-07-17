@@ -15,6 +15,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.View;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 
@@ -52,8 +53,6 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
 
         mySQLiteHelper = new MySQLiteHelper(this);
-        //mySQLiteHelper.clearTable();
-
         SharedPreferences mPrefs = getSharedPreferences("prefs", 0);
 
         if(!mPrefs.getBoolean("acceptedTerms", false)) {
@@ -72,6 +71,7 @@ public class MainActivity extends AppCompatActivity {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
+        setupLogoutBtn();
         setupStartBtn();
         setupStopBtn();
         setupSendBtn();
@@ -96,6 +96,16 @@ public class MainActivity extends AppCompatActivity {
             sendBtn.setVisibility(View.INVISIBLE);
             restartBtn.setVisibility(View.INVISIBLE);
         }
+    }
+
+    private void setupLogoutBtn() {
+        Button logoutBtn = (Button) findViewById(R.id.logoutBtn);
+        logoutBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                logout();
+            }
+        });
     }
 
     private void setupStartBtn() {
@@ -204,6 +214,14 @@ public class MainActivity extends AppCompatActivity {
             };
             handler.postDelayed(r, 0);
         }
+    }
+
+    private void logout() {
+        mySQLiteHelper.clearTable();
+        removeUser();
+
+        Intent myIntent = new Intent(this, LoginActivity.class);
+        startActivity(myIntent);
     }
 
     private void getToAsk() {
@@ -320,5 +338,13 @@ public class MainActivity extends AppCompatActivity {
     private String getUserName(){
         SharedPreferences preferences = getApplicationContext().getSharedPreferences("user", Context.MODE_PRIVATE);
         return preferences.getString("username", null);
+    }
+
+    private void removeUser() {
+        SharedPreferences preferences = getApplicationContext().getSharedPreferences("user", Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = preferences.edit();
+        editor.remove("userID");
+        editor.remove("username");
+        editor.apply();
     }
 }

@@ -26,20 +26,26 @@ public class LoginActivity extends Activity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_login);
 
-        Button btn = (Button) findViewById(R.id.loginBtn);
-        btn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View btn) {
+        if(getUserName() != null) {
+            getToMain();
+        }
+        else {
+            setContentView(R.layout.activity_login);
 
-                try {
-                    sendToServer();
-                } catch (JSONException e) {
-                    e.printStackTrace();
+            Button btn = (Button) findViewById(R.id.loginBtn);
+            btn.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View btn) {
+
+                    try {
+                        sendToServer();
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
                 }
-            }
-        });
+            });
+        }
     }
 
     private void sendToServer() throws JSONException {
@@ -96,7 +102,10 @@ public class LoginActivity extends Activity {
         return info != null && info.isConnected();
     }
 
-
+    private String getUserName(){
+        SharedPreferences preferences = getApplicationContext().getSharedPreferences("user", Context.MODE_PRIVATE);
+        return preferences.getString("username", null);
+    }
 
     private void getToMain() {
         Intent myIntent = new Intent(this, MainActivity.class);
