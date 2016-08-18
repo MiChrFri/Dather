@@ -1,0 +1,35 @@
+{
+  "project_info": {
+    "project_number": "373106442221",
+    "project_id": "dather-90c22"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:373106442221:android:a517451d2c85dfc0",
+        "android_client_info": {
+          "package_name": "com.example.michael.dather"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyD9XUbQkAc6VEcEKOgyi18SOVNbebZavPA"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 1,
+          "other_platform_oauth_client": []
+        },
+        "ads_service": {
+          "status": 1
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

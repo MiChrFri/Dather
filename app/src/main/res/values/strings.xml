@@ -1,0 +1,93 @@
+<resources>
+    <string name="app_name">DatherMe</string>
+    <string name="action_settings">Settings</string>
+    <string name="google_app_id">AIzaSyD9XUbQkAc6VEcEKOgyi18SOVNbebZavPA</string>
+    <string name="google_api_key">AIzaSyD9XUbQkAc6VEcEKOgyi18SOVNbebZavPA</string>
+    <string name="title_activity_terms_of_use">TermsOfUseActivity</string>
+    <string name="dummy_button">Dummy Button</string>
+    <string name="infoText">
+        <![CDATA[
+            <h1>TRINITY COLLEGE DUBLIN</h1>
+            <h1>INFORMATION SHEET FOR PROSPECTIVE PARTICIPANTS</h1>
+            <p>This research is part of my dissertation which is a requirement of the MSc Mobile and
+            Ubiquitous Computing within Trinity College Dublin. Within this research we try to identify
+            and analyse influences on the learning quality of writing computer software.</p>
+<br>
+            <h2>Context of research</h2>
+            <p>Learning how to program and thinking like a programmer can be a very different process
+            for different people. It seems that some students have more problems and struggles than
+            others. Also more experienced programmers sometimes write better code and sometimes create
+            less quality. This dissertation investigates metrics of environmental influences in the
+            cognitive processes which are responsible for the code quality and performance in the
+            process of software developing. The programming skills are measured by automated code
+            analysis software and then correlated with gathered data during the development process.
+            The built in sensors and of the participants mobile phone such as the location, microphone,
+            accelerometers etc. are being used to gather information about the environment and context.
+            Therefore it is required for the participants to install and start the provided android
+            application on their device</p>
+<br>
+            <h2>Benefits for the participants</h2>
+            <p>The participants will get feedback and information about their individual results and
+            the code quality compared to other participants. They can also request the results of
+            his study and the influencing factors in the quality of the results. This knowledge can
+            help to increase their own code quality and optimise their working environment.</p>
+<br>
+            <h2>The procedure of this study</h2>
+            <p>Each participant needs to install the data gathering application on their cellular
+            devices will explicitly asked to allow the application to collect the relevant data.
+            Afterwards the information sheet for prospective participants will be displayed within
+            the application. In order to go on, the user need to confirm that he/she understood the
+            information and agrees to the procedure. Starting the gathering process in the app will
+            trigger a periodically collection of data until the user stops the process. Beside the
+            gathering process, no data will be collected. After working on programming projects, the
+            participants may be asked to answer some additional questions through the application.
+            After completing and submitting the gathered data, the participant can uninstall the
+            application, which deletes all the gathered data. A deinstallation also resets the
+            permissions for application which means that the participant needs to set the permissions
+            again after reinstalling the application. The user is required to upload the programming
+            code on Github and grant access to the working repository in order to do the analysis.</p>
+<br>
+            <h2>The expected duration of the participants involvement</h2>
+            <p>First, the participant needs to download the app and initially enter information about
+            person, university and experience. Before starting the programming task, the student needs
+            to open the application and log the start time. After the submission the app asks the
+            participant additional occasional questions. The estimated time for the initial setup is
+            not more than 5 minutes. Afterwards the data is constantly being gathered during the
+            development process. The submission of the particular datasets after the gathering takes
+            less than a minute.</p>
+<br>
+            <h2>Data to be gathered</h2>
+            <p>In order to find correlations between the code quality and environmental influences,
+            we need to gather as many information about the environment as possible. We want to
+            detect the ambient noise by using the microphone of the mobile phone. We will only save
+            the noise value without audio files. None of the cameras will be used for collecting photos
+            or videos, neither will we access any private data from the users mobile device. We will
+            also collect motion information about the mobile device itself, the data from its light
+            sensor. In order to collect additional information about the environment, we gather the
+            location and current time of the mobile device which we could use to get the local weather
+            information. Some devices have additional sensors for detecting environmental information
+            such as temperature or humidity that we also might use in this study. </p>
+<br>
+            <h2>Usage of gathered data</h2>
+            <p>The data is exclusively used to for this study and will not be provided to anyone else
+            then the research team. The data will be used to create behaviour models and identify
+            interesting patterns. (e.g. We expect to find correlations between exigent tasks and loud
+            noise in the working environment). The collected data during the study will be anonymised
+            and the transmission over the internet will exclusively be in an encrypted form and just
+            used for statistical analysis purpose. The data will also  be stored encrypted and a not
+            traceable identifier will be used to keep the data anonymous.
+            Participants can be assured they will not be mentioned by name or any other unique
+            identifier and their data will be handled with the most possible discretion. We also
+            guarantee no direct quotations and contextual appropriateness.</p>
+<br>
+            <h2>Rights of the participant</h2>
+            <p>Every participant has the right to withdraw and to omit the individual collected data,
+            without penalty. A requested withdraw would  lead to deletion of the entire data of the
+            participant which was collected related to that study. Participants also have the provision
+            to receive an individual debriefing after participation. The participant has the right to
+            request a digital copy of the dissertation after its completion.</p>
+        ]]>
+"</string>
+    <string name="title_activity_rec">RecActivity</string>
+    <string name="title_activity_ask">AskActivity</string>
+</resources>

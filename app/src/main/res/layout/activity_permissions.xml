@@ -1,0 +1,78 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/colorDarkBG"
+    tools:context=".UI.PermissionsActivity">
+
+    <TextView
+        android:id="@+id/fullscreen_content"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:gravity="center"
+        android:keepScreenOn="true"
+        android:padding="10pt"
+        android:textColor="@color/colorLight"
+        android:textSize="12sp"
+        android:text="Please give the permissions for the gathering"
+        android:textStyle="bold"
+        android:layout_alignParentStart="true"
+        android:layout_above="@+id/checkBox2" />
+
+    <CheckBox
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Permission for retrieving the location"
+        android:textColor="@color/colorLightBlue"
+        android:id="@+id/checkBox1"
+        android:theme="@style/MyCheckBox"
+        android:checked="false"
+        android:layout_centerVertical="true"
+        android:layout_centerHorizontal="true" />
+
+    <CheckBox
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Permission for using the microphone"
+        android:textColor="@color/colorLightBlue"
+        android:theme="@style/MyCheckBox"
+        android:id="@+id/checkBox2"
+        android:checked="false"
+        android:layout_below="@+id/checkBox1"
+        android:layout_centerHorizontal="true" />
+
+    <CheckBox
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Permission for using the internet"
+        android:textColor="@color/colorLightBlue"
+        android:id="@+id/checkBox3"
+        android:theme="@style/MyCheckBox"
+        android:checked="false"
+        android:layout_gravity="center_horizontal|bottom"
+        android:layout_below="@+id/checkBox2"
+        android:layout_alignStart="@+id/checkBox1" />
+
+    <CheckBox
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Permission for using the network state"
+        android:textColor="@color/colorLightBlue"
+        android:id="@+id/checkBox4"
+        android:theme="@style/MyCheckBox"
+        android:checked="false"
+        android:layout_gravity="center_horizontal|bottom"
+        android:layout_below="@+id/checkBox3"
+        android:layout_alignStart="@+id/checkBox1" />
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Ok!"
+        android:visibility="invisible"
+        android:id="@+id/button"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="45dp" />
+
+</RelativeLayout>
